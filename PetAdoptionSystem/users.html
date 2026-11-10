@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Paws - Team & User Access</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=2">
+    <script src="dropdowns.js?v=2"></script>
+</head>
+<body>
+
+    <!-- Administrator Sidebar: User Management ONLY -->
+    <aside>
+        <div class="brand-block">
+            <div class="brand-mark">
+                <svg viewBox="0 0 24 24">
+                    <ellipse cx="4.8" cy="8.5" rx="1.8" ry="2.6" transform="rotate(-20 4.8 8.5)" />
+                    <ellipse cx="9.5" cy="5.2" rx="2" ry="2.9" transform="rotate(-6 9.5 5.2)" />
+                    <ellipse cx="14.5" cy="5.2" rx="2" ry="2.9" transform="rotate(6 14.5 5.2)" />
+                    <ellipse cx="19.2" cy="8.5" rx="1.8" ry="2.6" transform="rotate(20 19.2 8.5)" />
+                    <path d="M12 9.8c-3.6 0-6.8 2.4-6.8 6.2 0 3.2 2.7 5.5 6.8 5.5s6.8-2.3 6.8-5.5c0-3.8-3.2-6.2-6.8-6.2z" />
+                </svg>
+            </div>
+            <div class="brand-info">
+                <h2>Happy Paws</h2>
+                <span>Rescue & Adoption</span>
+            </div>
+        </div>
+
+        <div class="nav-section-title">Administration</div>
+        <nav>
+            <a href="users.html" class="active">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                Staff & Community
+            </a>
+        </nav>
+
+        <div class="nav-spacer"></div>
+
+        <!-- Administrator User Card -->
+        <div class="user-card">
+            <div class="user-avatar-initial" id="avatarInitial">A</div>
+            <div class="user-meta">
+                <span class="user-meta-name" id="userNameDisplay">Administrator</span>
+                <span class="status-pill role-admin" id="userRoleBadge">ADMIN</span>
+            </div>
+        </div>
+
+        <a href="login.html" class="btn-signout" onclick="localStorage.clear()">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Sign Out
+        </a>
+    </aside>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1>User Management</h1>
+                
+            </div>
+        </div>
+
+        <!-- Role Summary Metric Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-title">Total Accounts</div>
+                <div class="stat-card-value" id="valTotalUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Shelter Staff</div>
+                <div class="stat-card-value" style="color: var(--primary);" id="valStaffUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Adopters</div>
+                <div class="stat-card-value" style="color: var(--success);" id="valAdopterUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">System Administrators</div>
+                <div class="stat-card-value" style="color: var(--warning);" id="valAdminUsers">0</div>
+            </div>
+        </div>
+
+        <!-- User Accounts Table -->
+        <div class="table-card">
+            <div class="table-card-head">
+                <div>
+                    <h2>All Registered Accounts</h2>
+                    
+                </div>
+                <div class="user-filter-bar" style="margin-bottom: 0;">
+                    <button type="button" class="filter-tab active" onclick="filterByRole('all', this)">All Accounts</button>
+                    <button type="button" class="filter-tab" onclick="filterByRole('staff', this)">Staff Only</button>
+                    <button type="button" class="filter-tab" onclick="filterByRole('adopter', this)">Adopters Only</button>
+                </div>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">ID</th>
+                        <th>Name</th>
+                        <th>Email Address</th>
+                        <th>Assigned Role</th>
+                        <th>Account Role Action</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 24px; color: var(--text-muted);">
+                            Loading accounts...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toastNotice" class="toast-notice">
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span id="toastMessage">Role updated successfully!</span>
+    </div>
+
+    <script>
+        // Enforce Strict Role Separation
+        const currentRole = (localStorage.getItem('currentUserRole') || '').toLowerCase();
+        const currentUserName = localStorage.getItem('currentUserName') || 'Administrator';
+        const currentUserEmail = localStorage.getItem('currentUserEmail') || '';
+
+        if (currentRole !== 'admin') {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userNameDisplay').textContent = currentUserName;
+        document.getElementById('avatarInitial').textContent = currentUserName.charAt(0).toUpperCase();
+
+        let allUsersData = [];
+        let activeFilter = 'all';
+
+        function showToast(msg, type = 'success') {
+            let toast = document.getElementById('toastNotice');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toastNotice';
+                document.body.appendChild(toast);
+            }
+            let iconSvg = '';
+            if (type === 'error') {
+                iconSvg = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+            } else if (type === 'warning') {
+                iconSvg = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+            } else {
+                iconSvg = `<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+            }
+            toast.className = `toast-notice show toast-${type}`;
+            toast.innerHTML = `${iconSvg}<span>${msg}</span>`;
+            if (window._toastTimeout) clearTimeout(window._toastTimeout);
+            window._toastTimeout = setTimeout(() => toast.classList.remove('show'), 3800);
+        }
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/api/users', {
+                    headers: { 'X-User-Role': 'admin' }
+                });
+
+                if (response.status === 403) {
+                    showToast('Access denied. Administrator privileges required.', 'error');
+                    setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+                    return;
+                }
+
+                allUsersData = await response.json();
+                updateStats(allUsersData);
+                renderUsersTable();
+            } catch (err) {
+                console.error('Failed to load users:', err);
+            }
+        }
+
+        function updateStats(users) {
+            const total = users.length;
+            const staff = users.filter(u => (u.role || '').toLowerCase() === 'staff').length;
+            const adopters = users.filter(u => (u.role || '').toLowerCase() === 'adopter').length;
+            const admins = users.filter(u => (u.role || '').toLowerCase() === 'admin').length;
+
+            document.getElementById('valTotalUsers').textContent = total;
+            document.getElementById('valStaffUsers').textContent = staff;
+            document.getElementById('valAdopterUsers').textContent = adopters;
+            document.getElementById('valAdminUsers').textContent = admins;
+        }
+
+        function filterByRole(role, btn) {
+            activeFilter = role;
+            document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderUsersTable();
+        }
+
+        function renderUsersTable() {
+            const tbody = document.getElementById('usersTableBody');
+            let filtered = allUsersData;
+
+            if (activeFilter !== 'all') {
+                filtered = allUsersData.filter(u => (u.role || '').toLowerCase() === activeFilter);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--text-muted);">No accounts found in this category.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(u => {
+                const roleLower = (u.role || 'adopter').toLowerCase();
+                let rolePillClass = 'role-adopter';
+                let roleDisplay = 'ADOPTER';
+
+                if (roleLower === 'admin') {
+                    rolePillClass = 'role-admin';
+                    roleDisplay = 'ADMIN';
+                } else if (roleLower === 'staff') {
+                    rolePillClass = 'role-staff';
+                    roleDisplay = 'STAFF';
+                }
+
+                // Action controls
+                let actionHtml = '';
+                if (roleLower === 'adopter') {
+                    actionHtml = `
+                        <button type="button" class="btn-promote" onclick="changeUserRole(${u.userid}, 'staff', '${escapeQuotes(u.fullname)}')">
+                            <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                            Promote to Shelter Staff
+                        </button>
+                    `;
+                } else if (roleLower === 'staff') {
+                    actionHtml = `
+                        <button type="button" class="btn-demote" onclick="changeUserRole(${u.userid}, 'adopter', '${escapeQuotes(u.fullname)}')">
+                            Reassign to Adopter
+                        </button>
+                    `;
+                } else {
+                    actionHtml = `<span style="font-size:0.8rem; color:var(--text-subtle); font-weight:600;">System Administrator</span>`;
+                }
+
+                return `
+                    <tr>
+                        <td class="mono" style="font-weight: 600;">#${u.userid}</td>
+                        <td style="font-weight: 700; color: var(--text-main);">${escapeHtml(u.fullname)}</td>
+                        <td class="mono" style="color: var(--text-muted);">${escapeHtml(u.email)}</td>
+                        <td><span class="status-pill ${rolePillClass}">${roleDisplay}</span></td>
+                        <td>${actionHtml}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function showConfirmDialog({ title, message, confirmText = 'Confirm', cancelText = 'Cancel', type = 'warning' }) {
+            return new Promise((resolve) => {
+                let modal = document.getElementById('themeConfirmModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'themeConfirmModal';
+                    modal.className = 'confirm-modal-backdrop';
+                    modal.innerHTML = `
+                        <div class="confirm-modal-card">
+                            <div class="confirm-modal-icon-badge" id="confirmModalBadge">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            </div>
+                            <h3 class="confirm-modal-title" id="confirmModalTitle"></h3>
+                            <div class="confirm-modal-body" id="confirmModalBody"></div>
+                            <div class="confirm-modal-actions">
+                                <button type="button" class="btn btn-sm" id="btnConfirmCancel">Cancel</button>
+                                <button type="button" class="btn btn-sm btn-primary" id="btnConfirmOk">Confirm</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+
+                const titleEl = document.getElementById('confirmModalTitle');
+                const bodyEl = document.getElementById('confirmModalBody');
+                const okBtn = document.getElementById('btnConfirmOk');
+                const cancelBtn = document.getElementById('btnConfirmCancel');
+                const badge = document.getElementById('confirmModalBadge');
+
+                titleEl.textContent = title;
+                bodyEl.innerHTML = message;
+                okBtn.textContent = confirmText;
+                cancelBtn.textContent = cancelText;
+
+                if (type === 'danger') {
+                    badge.className = 'confirm-modal-icon-badge danger';
+                    okBtn.className = 'btn btn-sm btn-danger-solid';
+                } else {
+                    badge.className = 'confirm-modal-icon-badge warning';
+                    okBtn.className = 'btn btn-sm btn-primary';
+                }
+
+                modal.style.display = 'flex';
+
+                function cleanup(result) {
+                    modal.style.display = 'none';
+                    okBtn.removeEventListener('click', onOk);
+                    cancelBtn.removeEventListener('click', onCancel);
+                    modal.removeEventListener('click', onBackdrop);
+                    resolve(result);
+                }
+
+                function onOk() { cleanup(true); }
+                function onCancel() { cleanup(false); }
+                function onBackdrop(e) { if (e.target === modal) cleanup(false); }
+
+                okBtn.addEventListener('click', onOk);
+                cancelBtn.addEventListener('click', onCancel);
+                modal.addEventListener('click', onBackdrop);
+            });
+        }
+
+        async function changeUserRole(userId, newRole, userName) {
+            const roleName = newRole === 'staff' ? 'Shelter Staff' : (newRole === 'admin' ? 'Administrator' : 'Adopter');
+            const confirmed = await showConfirmDialog({
+                title: 'Change User Role',
+                message: `Are you sure you want to change <strong>${escapeHtml(userName)}</strong>'s role to <strong>${roleName}</strong>?`,
+                confirmText: 'Change Role',
+                type: 'warning'
+            });
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch(`/api/users/${userId}/role`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-User-Role': 'admin'
+                    },
+                    body: JSON.stringify({ role: newRole })
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    showToast(`${userName} is now assigned as ${roleName}!`, 'success');
+                    fetchUsers();
+                } else {
+                    showToast(data.message || 'Failed to update user role.', 'error');
+                }
+            } catch (err) {
+                showToast('Connection error while updating account role.', 'error');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function escapeQuotes(str) {
+            if (!str) return '';
+            return str.replace(/'/g, "\\'");
+        }
+
+        // Initialize
+        fetchUsers();
+    </script>
+</body>
+</html>

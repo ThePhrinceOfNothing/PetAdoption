@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Paws - Pet Adoption Information System</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=20261111_screen_split">
+    <script src="dropdowns.js?v=2"></script>
+    <style>
+        /* Immediate in-page animation definitions (guaranteed execution) */
+        .segmented-control {
+            position: relative;
+            display: flex;
+            background: var(--bg-canvas, #F7F3EE);
+            border: 1px solid var(--border-color, #E8DFD5);
+            border-radius: var(--radius-sm, 10px);
+            padding: 3px;
+            margin-bottom: 22px;
+            user-select: none;
+            isolation: isolate;
+        }
+
+        .segmented-indicator {
+            position: absolute;
+            top: 3px;
+            bottom: 3px;
+            left: 3px;
+            width: calc(50% - 3px);
+            background: #FFFFFF;
+            border-radius: calc(var(--radius-sm, 10px) - 2px);
+            box-shadow: 0 1px 3px rgba(35, 25, 20, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+            z-index: 1;
+            pointer-events: none;
+            will-change: transform;
+            transform: translateX(0);
+        }
+
+        @keyframes indicatorSlideToRegister {
+            0% {
+                transform: translateX(0) scaleX(1);
+            }
+            45% {
+                transform: translateX(50%) scaleX(1.15);
+            }
+            100% {
+                transform: translateX(100%) scaleX(1);
+            }
+        }
+
+        @keyframes indicatorSlideToLogin {
+            0% {
+                transform: translateX(100%) scaleX(1);
+            }
+            45% {
+                transform: translateX(50%) scaleX(1.15);
+            }
+            100% {
+                transform: translateX(0) scaleX(1);
+            }
+        }
+
+        .segmented-indicator.slide-to-register {
+            animation: indicatorSlideToRegister 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .segmented-indicator.slide-to-login {
+            animation: indicatorSlideToLogin 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .segmented-btn {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            border: none;
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--text-muted, #7A6F68);
+            border-radius: calc(var(--radius-sm, 10px) - 2px);
+            cursor: pointer;
+            transition: color 200ms ease-out, transform 80ms ease-out;
+        }
+
+        .segmented-btn:hover {
+            color: var(--text-main, #231914);
+        }
+
+        .segmented-btn:active {
+            transform: scale(0.97);
+        }
+
+        .segmented-btn.active {
+            color: var(--text-main, #231914);
+            font-weight: 700;
+        }
+
+        /* Smooth Expanding Fields Container & Sliding Anchored Action Button */
+        .auth-fields-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            height: 165px;
+            transition: height 280ms cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: height;
+        }
+
+        .auth-fields-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 2px 2px 0 2px;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(4px);
+            transition: opacity 140ms ease-in, transform 140ms ease-in, visibility 140ms;
+            will-change: opacity, transform;
+        }
+
+        .auth-fields-panel.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0);
+            transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1) 40ms, transform 220ms cubic-bezier(0.16, 1, 0.3, 1) 40ms;
+        }
+
+        .btn-submit-label {
+            display: inline-block;
+            transition: opacity 120ms ease-out, transform 120ms ease-out;
+        }
+
+        .btn-submit-label.label-swap {
+            opacity: 0;
+            transform: translateY(3px);
+        }
+
+        .auth-card .btn-primary {
+            transition: background-color 150ms ease-out, transform 80ms ease-out, box-shadow 150ms ease-out;
+        }
+
+        .auth-card .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(196, 90, 50, 0.25);
+        }
+
+        .auth-card .btn-primary:active {
+            transform: scale(0.97) translateY(0);
+            box-shadow: 0 1px 3px rgba(196, 90, 50, 0.2);
+        }
+
+        .auth-card .field input {
+            transition: border-color 140ms ease-out, box-shadow 140ms ease-out, transform 100ms ease-out;
+        }
+
+        .auth-card .field input:focus {
+            border-color: var(--primary, #C45A32);
+            box-shadow: 0 0 0 3px var(--primary-subtle, rgba(196, 90, 50, 0.12));
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="auth-split-screen">
+
+    <!-- LEFT HALF OF SCREEN (50% Screen Width): Shelter Vignette & Storytelling Scene -->
+    <div class="auth-screen-art">
+        <svg class="sunbeam-decor" viewBox="0 0 360 300" aria-hidden="true">
+            <polygon points="110,0 250,0 360,250 220,300" fill="#FDE68A" />
+        </svg>
+
+        <div class="art-panel-header">
+            <h1 class="art-panel-title">Every journey home starts right here.</h1>
+            <p class="art-panel-desc">Connect with rescued companions, track adoption applications, and give animals the love they deserve.</p>
+        </div>
+
+        <!-- Centerpiece Arched Shelter Window Vignette -->
+        <div class="shelter-window-vignette">
+            <svg viewBox="0 0 320 185" width="100%" height="220" fill="none" aria-hidden="true">
+                <!-- Arched Window Frame -->
+                <path d="M 80 160 L 80 70 C 80 25 240 25 240 70 L 240 160 Z" fill="#E8DFD5" stroke="#C45A32" stroke-width="2"/>
+                <!-- Outside View: Rolling green meadow & sun -->
+                <path d="M 82 70 C 82 30 238 30 238 70 L 238 120 C 200 105 160 115 82 120 Z" fill="#D5E8D4"/>
+                <circle cx="160" cy="55" r="16" fill="#FDE68A"/>
+                <path d="M 82 110 C 130 95 180 110 238 100 L 238 158 L 82 158 Z" fill="#A8D5BA"/>
+                <!-- Window Mullions -->
+                <line x1="160" y1="30" x2="160" y2="158" stroke="#FFFDFB" stroke-width="2"/>
+                <line x1="82" y1="90" x2="238" y2="90" stroke="#FFFDFB" stroke-width="2"/>
+
+                <!-- Terracotta Window Sill -->
+                <rect x="70" y="156" width="180" height="8" rx="2" fill="#C45A32"/>
+
+                <!-- Potted Foliage on Sill -->
+                <rect x="85" y="146" width="12" height="10" rx="1.5" fill="#E06E44"/>
+                <circle cx="88" cy="142" r="5" fill="#528F67"/>
+                <circle cx="94" cy="141" r="4.5" fill="#66A57D"/>
+
+                <!-- Cat Sitting on Sill Looking Outside -->
+                <path d="M 125 156 C 120 140 125 125 135 125 C 145 125 148 140 145 156 Z" fill="#2D231E"/>
+                <polygon points="128,125 133,118 135,125" fill="#2D231E"/>
+                <polygon points="135,125 139,118 142,125" fill="#2D231E"/>
+                <!-- Cat Tail Dangling -->
+                <path d="M 125 156 C 122 165 126 172 130 172" stroke="#2D231E" stroke-width="3" stroke-linecap="round"/>
+
+                <!-- Curled Golden Hound Resting on Rug Beside Window -->
+                <ellipse cx="205" cy="154" rx="26" ry="16" fill="#F59E0B" stroke="#2D231E" stroke-width="1.5"/>
+                <path d="M 195 146 C 190 138 195 128 205 128 C 215 128 218 138 215 146 Z" fill="#F59E0B" stroke="#2D231E" stroke-width="1.5"/>
+                <path d="M 192 134 C 188 138 189 148 194 146 Z" fill="#C45A32"/>
+                <path d="M 224 135 L 229 135 L 224 141 L 229 141" stroke="#C45A32" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- RIGHT HALF OF SCREEN (50% Screen Width): Centered Authentication Module -->
+    <div class="auth-screen-main">
+        <!-- Concept 5: Ambient Line-Art Companion Silhouettes in Background -->
+        <!-- Sleeping Hound (Top Left) -->
+        <svg viewBox="0 0 120 70" class="ambient-companion companion-hound" fill="none" stroke="#C45A32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M 20 50 C 15 35 30 20 55 20 C 80 20 95 30 105 45 C 95 55 70 58 45 55 Z"/>
+            <path d="M 28 32 C 22 36 24 45 32 44"/>
+            <path d="M 95 45 C 105 45 112 40 110 32"/>
+            <ellipse cx="60" cy="52" rx="7" ry="3.5" fill="#C45A32" fill-opacity="0.15"/>
+        </svg>
+
+        <!-- Stretching Cat (Top Right) -->
+        <svg viewBox="0 0 100 80" class="ambient-companion companion-cat" fill="none" stroke="#C45A32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M 15 65 L 35 60 C 45 40 60 30 75 35 L 85 45 C 80 30 85 20 75 25"/>
+            <path d="M 85 45 C 92 35 95 20 92 10" stroke-width="2"/>
+            <circle cx="82" cy="22" r="1.5" fill="#C45A32"/>
+        </svg>
+
+        <!-- Sitting Rabbit (Bottom Left) -->
+        <svg viewBox="0 0 80 90" class="ambient-companion companion-rabbit" fill="none" stroke="#C45A32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <ellipse cx="40" cy="65" rx="22" ry="16"/>
+            <circle cx="48" cy="42" r="12"/>
+            <path d="M 44 32 C 40 15 35 15 38 30"/>
+            <path d="M 52 32 C 55 12 62 12 56 30"/>
+            <circle cx="51" cy="40" r="1.5" fill="#C45A32"/>
+        </svg>
+
+        <!-- Happy Pup Wagging (Bottom Right) -->
+        <svg viewBox="0 0 100 80" class="ambient-companion companion-pup" fill="none" stroke="#C45A32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="45" cy="35" r="16"/>
+            <ellipse cx="65" cy="52" rx="20" ry="14"/>
+            <path d="M 35 30 C 26 34 28 44 34 42"/>
+            <path d="M 55 30 C 64 34 62 44 56 42"/>
+            <path d="M 85 52 C 95 44 98 32 92 28" stroke-width="2.2"/>
+            <circle cx="42" cy="33" r="1.5" fill="#C45A32"/>
+        </svg>
+
+        <!-- Centered White Login Card with Mascot -->
+        <div class="auth-card" id="authCard">
+            <!-- Interactive Paw Peek Mascot perched on the card edge -->
+            <div class="auth-mascot-wrapper" id="authMascotWrapper">
+                <svg viewBox="0 0 160 62" width="145" height="56" fill="none" class="auth-mascot" id="authMascot" aria-label="Happy Paws Mascot" role="img">
+                    <!-- Tail -->
+                    <g class="mascot-tail-group">
+                        <path class="mascot-tail" d="M 112 32 C 122 22 126 10 118 4 C 112 0 107 6 109 18 Z" fill="#E06E44" stroke="#C45A32" stroke-width="1.8" stroke-linejoin="round"/>
+                        <path d="M 118 4 C 115 3 112 5 110 8 C 113 10 116 8 118 4 Z" fill="#FFFDFB"/>
+                    </g>
+                    <!-- Left Ear -->
+                    <path class="mascot-ear mascot-ear-l" d="M 52 22 C 38 20 31 34 35 46 C 39 52 47 51 52 44 Z" fill="#E06E44" stroke="#C45A32" stroke-width="1.8"/>
+                    <!-- Right Ear -->
+                    <path class="mascot-ear mascot-ear-r" d="M 108 22 C 122 20 129 34 125 46 C 121 52 113 51 108 44 Z" fill="#E06E44" stroke="#C45A32" stroke-width="1.8"/>
+                    <!-- Head -->
+                    <path d="M 51 32 C 51 14 62 8 80 8 C 98 8 109 14 109 32 C 109 46 102 54 80 54 C 58 54 51 46 51 32 Z" fill="#FFFDFB" stroke="#C45A32" stroke-width="1.8"/>
+                    <path d="M 77 9 C 78 18 75 25 72 30 C 76 28 84 28 88 30 C 85 25 82 18 83 9 Z" fill="#FDF3ED"/>
+                    <!-- Blush -->
+                    <circle class="mascot-blush mascot-blush-l" cx="61" cy="38" r="6" fill="#FDBA8C" opacity="0.6"/>
+                    <circle class="mascot-blush mascot-blush-r" cx="99" cy="38" r="6" fill="#FDBA8C" opacity="0.6"/>
+                    
+                    <!-- Normal Eyes looking down at email / form fields -->
+                    <g class="mascot-eyes-normal">
+                        <ellipse cx="66" cy="30" rx="3.8" ry="4.5" fill="#2D231E"/>
+                        <circle cx="66" cy="32" r="1.4" fill="#FFFDFB"/>
+                        <ellipse cx="94" cy="30" rx="3.8" ry="4.5" fill="#2D231E"/>
+                        <circle cx="94" cy="32" r="1.4" fill="#FFFDFB"/>
+                    </g>
+                    
+                    <!-- Snout & Nose -->
+                    <ellipse cx="80" cy="41" rx="10.5" ry="7.5" fill="#FDF3ED" stroke="#E8DFD5" stroke-width="1"/>
+                    <path d="M 77 37 C 77 35.5 83 35.5 83 37 C 83 39 81 40 80 40 C 79 40 77 39 77 37 Z" fill="#C45A32"/>
+                    <path d="M 77 40 C 77 42 75 43 73.5 42 M 80 40 L 80 42 M 80 42 C 81.5 44 84.5 43.5 86.5 42" stroke="#C45A32" stroke-width="1.3" stroke-linecap="round"/>
+                    
+                    <!-- Resting Paws hooking card edge (Default) -->
+                    <g class="mascot-paws-resting">
+                        <path d="M 50 58 C 50 50 57 48 63 48 C 69 48 71 51 70 58 Z" fill="#FFFDFB" stroke="#C45A32" stroke-width="1.8"/>
+                        <line x1="56" y1="52" x2="56" y2="58" stroke="#C45A32" stroke-width="1.2"/>
+                        <line x1="62" y1="51" x2="62" y2="58" stroke="#C45A32" stroke-width="1.2"/>
+                        <path d="M 90 58 C 89 51 91 48 97 48 C 103 48 110 50 110 58 Z" fill="#FFFDFB" stroke="#C45A32" stroke-width="1.8"/>
+                        <line x1="98" y1="51" x2="98" y2="58" stroke="#C45A32" stroke-width="1.2"/>
+                        <line x1="104" y1="52" x2="104" y2="58" stroke="#C45A32" stroke-width="1.2"/>
+                    </g>
+
+                    <!-- Shy Eye-Covering Paws (Active on password focus) -->
+                    <g class="mascot-paws-shy">
+                        <g transform="translate(6, -20)">
+                            <path d="M 54 44 C 52 32 64 28 72 32 C 78 35 78 44 72 48 C 66 51 56 50 54 44 Z" fill="#FFFDFB" stroke="#C45A32" stroke-width="1.8"/>
+                            <line x1="60" y1="36" x2="64" y2="44" stroke="#C45A32" stroke-width="1.3" stroke-linecap="round"/>
+                            <line x1="66" y1="35" x2="69" y2="43" stroke="#C45A32" stroke-width="1.3" stroke-linecap="round"/>
+                        </g>
+                        <g transform="translate(-6, -20)">
+                            <path d="M 106 44 C 108 32 96 28 88 32 C 82 35 82 44 88 48 C 94 51 104 50 106 44 Z" fill="#FFFDFB" stroke="#C45A32" stroke-width="1.8"/>
+                            <line x1="100" y1="36" x2="96" y2="44" stroke="#C45A32" stroke-width="1.3" stroke-linecap="round"/>
+                            <line x1="94" y1="35" x2="91" y2="43" stroke="#C45A32" stroke-width="1.3" stroke-linecap="round"/>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="auth-brand">
+                <div class="auth-brand-logo">
+                    <svg viewBox="0 0 24 24">
+                        <ellipse cx="4.8" cy="8.5" rx="1.8" ry="2.6" transform="rotate(-20 4.8 8.5)" />
+                        <ellipse cx="9.5" cy="5.2" rx="2" ry="2.9" transform="rotate(-6 9.5 5.2)" />
+                        <ellipse cx="14.5" cy="5.2" rx="2" ry="2.9" transform="rotate(6 14.5 5.2)" />
+                        <ellipse cx="19.2" cy="8.5" rx="1.8" ry="2.6" transform="rotate(20 19.2 8.5)" />
+                        <path d="M12 9.8c-3.6 0-6.8 2.4-6.8 6.2 0 3.2 2.7 5.5 6.8 5.5s6.8-2.3 6.8-5.5c0-3.8-3.2-6.2-6.8-6.2z" />
+                    </svg>
+                </div>
+                <h2>Happy Paws</h2>
+                <p>Rescue & Adoption</p>
+            </div>
+
+            <!-- Segmented Tab Navigation with Sliding Indicator (Rule 5 & 9) -->
+            <div class="segmented-control" id="authSegmentedControl">
+                <div class="segmented-indicator" id="authIndicator"></div>
+                <button type="button" class="segmented-btn active" id="btnTabLogin" onclick="switchAuthMode('login')">Sign In</button>
+                <button type="button" class="segmented-btn" id="btnTabRegister" onclick="switchAuthMode('register')">Create Account</button>
+            </div>
+
+            <!-- Smoothly Expanding Input Fields Container -->
+            <div class="auth-fields-container" id="authFieldsContainer">
+                <!-- SIGN IN FORM (Credentials verified securely on server) -->
+                <form id="formLogin" class="auth-fields-panel active">
+                    <div class="field" style="margin-bottom: 14px;">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="e.g. adopter@happypaws.com" required autocomplete="email">
+                    </div>
+
+                    <div class="field" style="margin-bottom: 20px;">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" style="display: none;"></button>
+                </form>
+
+                <!-- REGISTER FORM (Matches Adopters database table schema) -->
+                <form id="formRegister" class="auth-fields-panel">
+                    <div class="field-row-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                        <div class="field">
+                            <label for="regFirstName">First Name</label>
+                            <input type="text" id="regFirstName" placeholder="e.g. Maria" required autocomplete="given-name">
+                        </div>
+                        <div class="field">
+                            <label for="regLastName">Last Name</label>
+                            <input type="text" id="regLastName" placeholder="e.g. Santos" required autocomplete="family-name">
+                        </div>
+                    </div>
+
+                    <div class="field" style="margin-bottom: 12px;">
+                        <label for="regContactNo">Contact Number</label>
+                        <input type="tel" id="regContactNo" placeholder="e.g. 09171234567" required autocomplete="tel">
+                    </div>
+
+                    <div class="field" style="margin-bottom: 12px;">
+                        <label for="regAddress">Residential Address</label>
+                        <input type="text" id="regAddress" placeholder="e.g. Quezon City, Metro Manila" required autocomplete="street-address">
+                    </div>
+
+                    <div class="field" style="margin-bottom: 12px;">
+                        <label for="regEmail">Email Address</label>
+                        <input type="email" id="regEmail" placeholder="e.g. maria.santos@happypaws.com" required autocomplete="email">
+                    </div>
+
+                    <div class="field" style="margin-bottom: 20px;">
+                        <label for="regPassword">Create Password</label>
+                        <input type="password" id="regPassword" placeholder="At least 8 characters" minlength="8" required autocomplete="new-password">
+                    </div>
+                    <button type="submit" style="display: none;"></button>
+                </form>
+            </div>
+
+            <!-- Solid Primary Action Button: Rides with card expansion, NEVER fades out! -->
+            <button type="button" id="btnSubmitAuth" class="btn btn-primary btn-block">
+                <span class="btn-submit-label" id="btnSubmitLabel">Sign In</span>
+            </button>
+            <p id="authFeedback" style="font-size: 0.84rem; font-weight: 600; text-align: center; margin-top: 12px; min-height: 20px;"></p>
+        </div>
+    </div>
+
+    <script>
+        let currentAuthMode = 'login';
+        const container = document.getElementById('authFieldsContainer');
+        const formLogin = document.getElementById('formLogin');
+        const formRegister = document.getElementById('formRegister');
+        const indicator = document.getElementById('authIndicator');
+        const btnLogin = document.getElementById('btnTabLogin');
+        const btnRegister = document.getElementById('btnTabRegister');
+        const btnSubmitAuth = document.getElementById('btnSubmitAuth');
+        const btnSubmitLabel = document.getElementById('btnSubmitLabel');
+        const authFeedback = document.getElementById('authFeedback');
+
+        function updateFieldsHeight(mode) {
+            const activeForm = mode === 'login' ? formLogin : formRegister;
+            container.style.height = activeForm.offsetHeight + 'px';
+        }
+
+        function setFormAccessibility(mode) {
+            const isLogin = mode === 'login';
+            formLogin.querySelectorAll('input').forEach(el => {
+                if (isLogin) el.removeAttribute('tabindex');
+                else el.setAttribute('tabindex', '-1');
+            });
+            formRegister.querySelectorAll('input').forEach(el => {
+                if (!isLogin) el.removeAttribute('tabindex');
+                else el.setAttribute('tabindex', '-1');
+            });
+        }
+
+        function initMascotInteractions() {
+            const mascot = document.getElementById('authMascot');
+
+            function setMascotShy(shy) {
+                if (!mascot) return;
+                if (shy) {
+                    mascot.classList.add('is-shy');
+                } else {
+                    mascot.classList.remove('is-shy');
+                }
+            }
+
+            document.addEventListener('focusin', (e) => {
+                if (e.target && (e.target.id === 'loginPassword' || e.target.id === 'regPassword')) {
+                    setMascotShy(true);
+                }
+            });
+
+            document.addEventListener('focusout', (e) => {
+                if (e.target && (e.target.id === 'loginPassword' || e.target.id === 'regPassword')) {
+                    setMascotShy(false);
+                }
+            });
+
+            const loginPass = document.getElementById('loginPassword');
+            const regPass = document.getElementById('regPassword');
+            if (loginPass) {
+                loginPass.addEventListener('focus', () => setMascotShy(true));
+                loginPass.addEventListener('blur', () => setMascotShy(false));
+            }
+            if (regPass) {
+                regPass.addEventListener('focus', () => setMascotShy(true));
+                regPass.addEventListener('blur', () => setMascotShy(false));
+            }
+            if (mascot) {
+                mascot.addEventListener('click', () => {
+                    mascot.classList.add('ear-wiggle');
+                    setTimeout(() => mascot.classList.remove('ear-wiggle'), 350);
+                });
+            }
+        }
+
+        // Initialize immediately and on DOM load
+        initMascotInteractions();
+        updateFieldsHeight('login');
+        setFormAccessibility('login');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateFieldsHeight('login');
+            setFormAccessibility('login');
+            initMascotInteractions();
+        });
+
+        window.addEventListener('resize', () => {
+            updateFieldsHeight(currentAuthMode);
+        });
+
+        function switchAuthMode(mode) {
+            if (currentAuthMode === mode) return;
+            const isLogin = mode === 'login';
+            currentAuthMode = mode;
+
+            // Trigger mascot ear perk animation on mode switch
+            const mascot = document.getElementById('authMascot');
+            if (mascot) {
+                mascot.classList.add('ear-wiggle');
+                setTimeout(() => mascot.classList.remove('ear-wiggle'), 350);
+            }
+
+            btnLogin.classList.toggle('active', isLogin);
+            btnRegister.classList.toggle('active', !isLogin);
+
+            // Squash & Stretch moving knob animation for segmented indicator (Rules 5 & 9)
+            indicator.classList.remove('slide-to-register', 'slide-to-login');
+            void indicator.offsetWidth; // trigger reflow
+            indicator.classList.add(isLogin ? 'slide-to-login' : 'slide-to-register');
+
+            // Soft overlapping fade between input panels (no horizontal sliding)
+            if (isLogin) {
+                formRegister.classList.remove('active');
+                formLogin.classList.add('active');
+            } else {
+                formLogin.classList.remove('active');
+                formRegister.classList.add('active');
+            }
+
+            // Smooth physical height expansion pushes button downward naturally (Button never fades out!)
+            updateFieldsHeight(mode);
+
+            // Quick, elegant text crossfade on the solid button
+            btnSubmitLabel.classList.add('label-swap');
+            setTimeout(() => {
+                btnSubmitLabel.textContent = isLogin ? 'Sign In' : 'Create Adopter Account';
+                btnSubmitLabel.classList.remove('label-swap');
+            }, 100);
+
+            // Maintain keyboard accessibility
+            setFormAccessibility(mode);
+
+            // Clear feedback
+            authFeedback.textContent = '';
+            authFeedback.classList.remove('auth-feedback-animate');
+        }
+
+        // Connect anchored primary button to active form
+        btnSubmitAuth.addEventListener('click', () => {
+            if (currentAuthMode === 'login') {
+                formLogin.requestSubmit();
+            } else {
+                formRegister.requestSubmit();
+            }
+        });
+
+        function showAuthFeedback(msg, isSuccess = false) {
+            authFeedback.style.color = isSuccess ? 'var(--success)' : 'var(--danger)';
+            authFeedback.textContent = msg;
+            authFeedback.classList.remove('auth-feedback-animate');
+            void authFeedback.offsetWidth;
+            authFeedback.classList.add('auth-feedback-animate');
+        }
+
+        // ==================== AUTHENTICATION ====================
+        formLogin.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            btnSubmitAuth.disabled = true;
+            btnSubmitLabel.textContent = 'Signing in...';
+            authFeedback.textContent = '';
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showAuthFeedback(`Welcome back, ${data.user.fullName}!`, true);
+
+                    const role = data.user.role.toLowerCase();
+                    localStorage.setItem('currentUserRole', role);
+                    localStorage.setItem('currentUserEmail', data.user.email);
+                    localStorage.setItem('currentUserName', data.user.fullName);
+                    localStorage.setItem('currentUserId', data.user.userId);
+
+                    setTimeout(() => {
+                        if (role === 'admin') {
+                            window.location.href = 'users.html';
+                        } else if (role === 'staff') {
+                            window.location.href = 'index.html';
+                        } else {
+                            window.location.href = 'pets.html';
+                        }
+                    }, 250);
+                } else {
+                    showAuthFeedback(data.message || 'Invalid email or password.', false);
+                    btnSubmitAuth.disabled = false;
+                    btnSubmitLabel.textContent = 'Sign In';
+                }
+            } catch (err) {
+                showAuthFeedback('Unable to connect to service. Please check connection.', false);
+                btnSubmitAuth.disabled = false;
+                btnSubmitLabel.textContent = 'Sign In';
+            }
+        });
+
+        // ==================== REGISTRATION ====================
+        formRegister.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const firstName = document.getElementById('regFirstName').value.trim();
+            const lastName = document.getElementById('regLastName').value.trim();
+            const contactNo = document.getElementById('regContactNo').value.trim();
+            const address = document.getElementById('regAddress').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+
+            btnSubmitAuth.disabled = true;
+            btnSubmitLabel.textContent = 'Creating account...';
+            authFeedback.textContent = '';
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstName, lastName, contactNo, address, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showAuthFeedback('Account created! Welcome to Happy Paws.', true);
+
+                    localStorage.setItem('currentUserRole', 'adopter');
+                    localStorage.setItem('currentUserEmail', data.user.email);
+                    localStorage.setItem('currentUserName', data.user.fullName);
+                    localStorage.setItem('currentUserId', data.user.userId);
+
+                    setTimeout(() => {
+                        window.location.href = 'pets.html';
+                    }, 400);
+                } else {
+                    showAuthFeedback(data.message || 'Registration failed.', false);
+                    btnSubmitAuth.disabled = false;
+                    btnSubmitLabel.textContent = 'Create Adopter Account';
+                }
+            } catch (err) {
+                showAuthFeedback('Service unavailable. Please retry shortly.', false);
+                btnSubmitAuth.disabled = false;
+                btnSubmitLabel.textContent = 'Create Adopter Account';
+            }
+        });
+    </script>
+</body>
+</html>

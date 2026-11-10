@@ -1,0 +1,23 @@
+# Maven build output
+backend/target/
+
+# Sensitive configuration files (passwords & secrets)
+backend/src/main/resources/application.properties
+*.env
+
+# IDE and Editor files
+.idea/
+*.iml
+.vscode/
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Logs
+*.log
+
+# AI Agent configuration & local skills
+.agents/
+AGENTS.md

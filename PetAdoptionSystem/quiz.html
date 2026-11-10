@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Paws - Pet Match Quiz</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=2">
+    <script src="dropdowns.js?v=2"></script>
+</head>
+<body>
+
+    <aside>
+        <div class="brand-block">
+            <div class="brand-mark">
+                <svg viewBox="0 0 24 24">
+                    <ellipse cx="4.8" cy="8.5" rx="1.8" ry="2.6" transform="rotate(-20 4.8 8.5)" />
+                    <ellipse cx="9.5" cy="5.2" rx="2" ry="2.9" transform="rotate(-6 9.5 5.2)" />
+                    <ellipse cx="14.5" cy="5.2" rx="2" ry="2.9" transform="rotate(6 14.5 5.2)" />
+                    <ellipse cx="19.2" cy="8.5" rx="1.8" ry="2.6" transform="rotate(20 19.2 8.5)" />
+                    <path d="M12 9.8c-3.6 0-6.8 2.4-6.8 6.2 0 3.2 2.7 5.5 6.8 5.5s6.8-2.3 6.8-5.5c0-3.8-3.2-6.2-6.8-6.2z" />
+                </svg>
+            </div>
+            <div class="brand-info">
+                <h2>Happy Paws</h2>
+                <span>Rescue & Adoption</span>
+            </div>
+        </div>
+
+        <div class="nav-section-title" id="navSectionTitle">Adopter Menu</div>
+        <nav id="dynamicNav">
+            <!-- Dynamically populated based on role -->
+        </nav>
+
+        <div class="nav-spacer"></div>
+
+        <div class="user-card">
+            <div class="user-avatar-initial" id="avatarInitial">U</div>
+            <div class="user-meta">
+                <span class="user-meta-name" id="userNameDisplay">Adopter</span>
+                <span class="status-pill role-adopter" id="userRoleBadge">ADOPTER</span>
+            </div>
+        </div>
+
+        <a href="login.html" class="btn-signout" onclick="localStorage.clear()">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Sign Out
+        </a>
+    </aside>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1>Pet Match Quiz</h1>
+                
+            </div>
+        </div>
+
+        <!-- Quiz Form Panel -->
+        <div class="quiz-card">
+            <form id="formQuiz">
+                <!-- Question 1: Preferred Species -->
+                <div class="quiz-question">
+                    <h3>1. What type of pet are you looking to adopt?</h3>
+                    <div class="quiz-options">
+                        <label class="quiz-option-label">
+                            <input type="radio" name="species" value="Dog" checked>
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Dog (Canine)</span>
+                                <span class="quiz-option-desc">Devoted four-legged dog seeking a faithful companion</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="species" value="Cat">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Cat (Feline)</span>
+                                <span class="quiz-option-desc">Affectionate, independent feline companion</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="species" value="SmallAnimal">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Small Companion</span>
+                                <span class="quiz-option-desc">Rabbits, hamsters, and gentle indoor birds</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="species" value="Any">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Open to Any Species</span>
+                                <span class="quiz-option-desc">The right personality and mutual bond matter most</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 2: Personality (Directly matching pet database personality values) -->
+                <div class="quiz-question">
+                    <h3>2. Which personality and temperament best aligns with your daily life?</h3>
+                    <div class="quiz-options" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                        <label class="quiz-option-label">
+                            <input type="radio" name="personality" value="Calm & Gentle (Cozy Couch Companion)" checked>
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Calm & Gentle</span>
+                                <span class="quiz-option-desc">Cozy couch companion for relaxed, peaceful homes</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="personality" value="Playful & High-Energy (Outdoor Adventurer)">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Playful & High-Energy</span>
+                                <span class="quiz-option-desc">Outdoor adventurer ready for hikes, runs, and active play</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="personality" value="Affectionate & Loving (Cuddly Lap Pet)">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Affectionate & Loving</span>
+                                <span class="quiz-option-desc">Cuddly lap pet who thrives on warmth and continuous closeness</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="personality" value="Curious & Independent (Low Maintenance)">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Curious & Independent</span>
+                                <span class="quiz-option-desc">Low-maintenance companion content while you work</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="personality" value="Patient & Friendly (Great with Families & Kids)">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Patient & Friendly</span>
+                                <span class="quiz-option-desc">Tolerant, gentle companion who adores kids and visitors</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="personality" value="Alert & Loyal (Protective Guardian)">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Alert & Loyal</span>
+                                <span class="quiz-option-desc">Attentive protector who forms a deep, loyal bond</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 3: Living Environment -->
+                <div class="quiz-question">
+                    <h3>3. What type of living space will your pet reside in?</h3>
+                    <div class="quiz-options">
+                        <label class="quiz-option-label">
+                            <input type="radio" name="homeType" value="Apartment" checked>
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Apartment or Flat</span>
+                                <span class="quiz-option-desc">Compact indoor space with regular neighborhood walks</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="homeType" value="House">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">House with Fenced Garden</span>
+                                <span class="quiz-option-desc">Private yard with secure boundaries for outdoor playtime</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="homeType" value="Acreage">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Spacious Rural Acreage</span>
+                                <span class="quiz-option-desc">Extensive countryside property with ample roaming room</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 4: Household Dynamics -->
+                <div class="quiz-question">
+                    <h3>4. Who currently lives in your household?</h3>
+                    <div class="quiz-options">
+                        <label class="quiz-option-label">
+                            <input type="radio" name="household" value="Children" checked>
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Family with Children</span>
+                                <span class="quiz-option-desc">Lively home with kids requiring patient and sociable temperament</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="household" value="Adults">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Adults-Only Household</span>
+                                <span class="quiz-option-desc">Quiet or professional home without young children</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="household" value="MultiPet">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Multi-Pet Household</span>
+                                <span class="quiz-option-desc">Already sharing life with existing dogs, cats, or small pets</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 5: Medical Care Preparedness -->
+                <div class="quiz-question">
+                    <h3>5. What health and medical care commitment are you prepared to provide?</h3>
+                    <div class="quiz-options">
+                        <label class="quiz-option-label">
+                            <input type="radio" name="medicalCare" value="Healthy" checked>
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Standard Care</span>
+                                <span class="quiz-option-desc">Seeking companions cleared healthy with routine wellness needs</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="medicalCare" value="Allergies">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Dietary & Allergy Management</span>
+                                <span class="quiz-option-desc">Comfortable managing special food formulas or mild allergies</span>
+                            </div>
+                        </label>
+                        <label class="quiz-option-label">
+                            <input type="radio" name="medicalCare" value="SpecialCare">
+                            <div class="quiz-option-content">
+                                <span class="quiz-option-title">Specialized Medical Care</span>
+                                <span class="quiz-option-desc">Willing to care for companions with chronic conditions or daily meds</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" id="btnSubmitQuiz" class="btn btn-primary" style="padding: 12px 28px; font-size: 0.95rem; margin-top: 8px;">
+                    Find My Match
+                </button>
+            </form>
+
+            <!-- No Available Pets Notification Banner -->
+            <div id="quizNoMatchBanner" class="quiz-result-banner" style="display: none; padding: 20px;">
+                <div class="cozy-empty-state" style="border: none; box-shadow: none; background: transparent; padding: 12px 0; margin: 0 auto;">
+                    <svg class="cozy-sleeping-svg" viewBox="0 0 160 120" width="140" height="105" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="80" cy="85" rx="66" ry="20" fill="#F7F1EA" stroke="#E8DFD5" stroke-width="1.5" stroke-dasharray="4 4" />
+                        <g class="sleeping-companion-body">
+                            <path d="M42 78 C36 66 41 48 56 41 C72 34 100 36 112 50 C122 62 122 76 114 84 C106 92 88 93 72 91 C58 89 46 86 42 78 Z" fill="#FFFDFB" stroke="#C45A32" stroke-width="2.2" stroke-linejoin="round" />
+                            <path d="M58 44 C70 38 94 40 106 50 C96 56 74 54 58 44 Z" fill="rgba(196, 90, 50, 0.12)" />
+                            <path d="M48 46 C44 38 46 32 52 33 C58 34 56 42 54 46" fill="#F5E8DC" stroke="#C45A32" stroke-width="2" stroke-linecap="round" />
+                            <path d="M60 42 C58 33 62 27 68 29 C73 31 70 39 66 43" fill="#F5E8DC" stroke="#C45A32" stroke-width="2" stroke-linecap="round" />
+                            <path d="M114 82 C124 80 128 70 124 62 C120 56 114 60 112 66 C110 72 112 78 114 82" fill="#FFFDFB" stroke="#C45A32" stroke-width="2.2" stroke-linecap="round" />
+                            <ellipse cx="64" cy="84" rx="8" ry="5" fill="#FFFFFF" stroke="#C45A32" stroke-width="1.8" />
+                            <line x1="62" y1="82" x2="62" y2="86" stroke="#C45A32" stroke-width="1.4" stroke-linecap="round" />
+                            <line x1="66" y1="82" x2="66" y2="86" stroke="#C45A32" stroke-width="1.4" stroke-linecap="round" />
+                            <ellipse cx="79" cy="86" rx="7.5" ry="4.5" fill="#FFFFFF" stroke="#C45A32" stroke-width="1.8" />
+                            <line x1="77" y1="84" x2="77" y2="88" stroke="#C45A32" stroke-width="1.4" stroke-linecap="round" />
+                            <line x1="81" y1="84" x2="81" y2="88" stroke="#C45A32" stroke-width="1.4" stroke-linecap="round" />
+                            <path d="M48 62 C44 66 45 72 50 74 C55 75 60 73 62 68" fill="#FFFFFF" stroke="#C45A32" stroke-width="1.8" stroke-linecap="round" />
+                            <path d="M47 65 C48 64 50 64 51 65 C50.5 67 48.5 68 47 65 Z" fill="#C45A32" />
+                            <path d="M54 57 C57 61 61 61 64 57" stroke="#C45A32" stroke-width="2" stroke-linecap="round" />
+                        </g>
+                        <g class="sleeping-zzz">
+                            <path d="M102 26 H108 L102 33 H108" stroke="#C45A32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" />
+                            <path d="M113 16 H118 L113 22 H118" stroke="#C45A32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" />
+                        </g>
+                    </svg>
+                    <div class="cozy-empty-title">Everyone is tucked in and cozy.</div>
+                    <div class="cozy-empty-desc">All our rescued companions have found loving homes! Check back soon for new arrivals.</div>
+                    <div style="margin-top: 14px;"><a href="pets.html" class="btn btn-sm btn-primary">Browse Our Pets</a></div>
+                </div>
+            </div>
+
+            <!-- Quiz Result Match Display -->
+            <div id="quizResultBanner" class="quiz-result-banner">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+                    <div>
+                        <span class="status-pill success" style="margin-bottom: 6px;">Top Match Found</span>
+                        <h3 id="matchHeading" style="font-size: 1.35rem; margin: 4px 0;"></h3>
+                        <p id="matchSubheading" style="color: var(--text-muted); font-size: 0.9rem; margin: 0;"></p>
+                    </div>
+                    <span id="matchScoreBadge" class="status-pill match-pulse-badge"></span>
+                </div>
+
+                <!-- Featured Matched Companion Hero Card -->
+                <div class="quiz-featured-hero">
+                    <img id="matchPetImage" src="" alt="Matched Companion" class="quiz-hero-img" onerror="this.src=DEFAULT_PET_PLACEHOLDER">
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                            <h4 id="matchPetName" style="font-size: 1.15rem; font-weight: 800; margin: 0; color: var(--text-main);"></h4>
+                            <span id="matchPetStatusPill" class="status-pill success">Available</span>
+                        </div>
+                        <div id="matchPetMeta" style="font-size: 0.84rem; color: var(--text-muted); margin: 4px 0 10px 0;"></div>
+                        <div id="matchPetPersonalityText" style="font-size: 0.84rem; font-weight: 600; color: var(--primary); margin-bottom: 12px;"></div>
+
+                        <div class="quiz-factors-grid">
+                            <div class="quiz-factor-item">
+                                <div class="quiz-factor-label">Personality Synergy</div>
+                                <div class="quiz-factor-text" id="factorPersonality"></div>
+                            </div>
+                            <div class="quiz-factor-item">
+                                <div class="quiz-factor-label">Living Space Fit</div>
+                                <div class="quiz-factor-text" id="factorLiving"></div>
+                            </div>
+                            <div class="quiz-factor-item">
+                                <div class="quiz-factor-label">Household & Safety</div>
+                                <div class="quiz-factor-text" id="factorHousehold"></div>
+                            </div>
+                            <div class="quiz-factor-item">
+                                <div class="quiz-factor-label">Clinical Health Fit</div>
+                                <div class="quiz-factor-text" id="factorMedical"></div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap;">
+                            <a id="btnApplyMatch" href="adopters.html" class="btn btn-primary">
+                                Apply to Adopt This Companion
+                            </a>
+                            <a id="btnViewProfile" href="pet_profile.html" class="btn btn-secondary">
+                                View Full Clinical Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Runner-Up Compatible Companions -->
+                <div id="runnersUpContainer" style="display: none;">
+                    <div class="quiz-runners-header">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        Other Compatible Companions for You
+                    </div>
+                    <div class="quiz-runners-grid" id="runnersUpGrid"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Separation of Duties Verification: Quiz is for Adopters ONLY
+        const currentRole = (localStorage.getItem('currentUserRole') || '').toLowerCase();
+        const currentUserName = localStorage.getItem('currentUserName') || 'User';
+        const currentUserEmail = localStorage.getItem('currentUserEmail') || '';
+
+        // Staff job is strictly to post pets and review applications -> redirect to dashboard
+        if (currentRole === 'staff') {
+            window.location.href = 'index.html';
+        } else if (currentRole === 'admin') {
+            window.location.href = 'users.html';
+        } else if (!currentRole) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userNameDisplay').textContent = currentUserName;
+        document.getElementById('avatarInitial').textContent = currentUserName.charAt(0).toUpperCase();
+
+        const badge = document.getElementById('userRoleBadge');
+        badge.className = 'status-pill role-adopter';
+        badge.textContent = 'ADOPTER';
+
+        // Render Adopter Navigation: strictly Our Pets, Pet Match Quiz, My Applications (No Pet Profile button!)
+        const dynamicNav = document.getElementById('dynamicNav');
+        document.getElementById('navSectionTitle').textContent = 'Adopter Menu';
+        dynamicNav.innerHTML = `
+            <a href="pets.html">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="6" cy="9" r="2" />
+                    <circle cx="10" cy="5.5" r="2" />
+                    <circle cx="14" cy="5.5" r="2" />
+                    <circle cx="18" cy="9" r="2" />
+                    <path d="M6.5 15.5 C6.5 12.8 8.8 11.5 12 11.5 C15.2 11.5 17.5 12.8 17.5 15.5 C17.5 18.5 15 20.5 12 20.5 C9 20.5 6.5 18.5 6.5 15.5 Z" />
+                </svg>
+                Our Pets
+            </a>
+            <a href="quiz.html" class="active">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Pet Match Quiz
+            </a>
+            <a href="adopters.html">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                My Applications
+            </a>
+        `;
+
+        // Blank placeholder & image getter
+        const DEFAULT_PET_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='360' viewBox='0 0 600 360' fill='%23F4EFEA'><rect width='600' height='360' fill='%23F4EFEA'/><circle cx='270' cy='155' r='18' fill='%23D5C7B8'/><circle cx='330' cy='155' r='18' fill='%23D5C7B8'/><circle cx='235' cy='190' r='15' fill='%23D5C7B8'/><circle cx='365' cy='190' r='15' fill='%23D5C7B8'/><path d='M300 195 C265 195 245 225 260 255 C270 275 330 275 340 255 C355 225 335 195 300 195 Z' fill='%23D5C7B8'/><text x='300' y='305' font-family='sans-serif' font-size='14' font-weight='600' fill='%239E8F80' text-anchor='middle'>No Photo Available</text></svg>";
+
+        function getPetImageUrl(p) {
+            if (p && (p.image_data || p.ImageData)) return p.image_data || p.ImageData;
+            if (p && (p.imageurl || p.ImageURL || p.photo_url || p.photoUrl)) return p.imageurl || p.ImageURL || p.photo_url || p.photoUrl;
+            return DEFAULT_PET_PLACEHOLDER;
+        }
+
+        // Available Pets Database (Strictly exclude adopted pets)
+        let petsList = [];
+        async function loadPets() {
+            try {
+                const res = await fetch('/api/pets');
+                const all = await res.json();
+                petsList = Array.isArray(all) ? all.filter(p => {
+                    const status = (p.adoptionstatus ?? p.AdoptionStatus ?? 'Available').trim().toLowerCase();
+                    return status === 'available';
+                }) : [];
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        loadPets();
+
+        // Exact Personality Compatibility Synergy Matrix
+        const personalitySynergies = {
+            'Calm & Gentle (Cozy Couch Companion)': {
+                'Calm & Gentle (Cozy Couch Companion)': 35,
+                'Affectionate & Loving (Cuddly Lap Pet)': 31,
+                'Curious & Independent (Low Maintenance)': 29,
+                'Patient & Friendly (Great with Families & Kids)': 27,
+                'Alert & Loyal (Protective Guardian)': 18,
+                'Playful & High-Energy (Outdoor Adventurer)': 14
+            },
+            'Playful & High-Energy (Outdoor Adventurer)': {
+                'Playful & High-Energy (Outdoor Adventurer)': 35,
+                'Alert & Loyal (Protective Guardian)': 31,
+                'Patient & Friendly (Great with Families & Kids)': 28,
+                'Affectionate & Loving (Cuddly Lap Pet)': 23,
+                'Curious & Independent (Low Maintenance)': 16,
+                'Calm & Gentle (Cozy Couch Companion)': 12
+            },
+            'Affectionate & Loving (Cuddly Lap Pet)': {
+                'Affectionate & Loving (Cuddly Lap Pet)': 35,
+                'Calm & Gentle (Cozy Couch Companion)': 32,
+                'Patient & Friendly (Great with Families & Kids)': 30,
+                'Curious & Independent (Low Maintenance)': 24,
+                'Playful & High-Energy (Outdoor Adventurer)': 21,
+                'Alert & Loyal (Protective Guardian)': 19
+            },
+            'Curious & Independent (Low Maintenance)': {
+                'Curious & Independent (Low Maintenance)': 35,
+                'Calm & Gentle (Cozy Couch Companion)': 30,
+                'Affectionate & Loving (Cuddly Lap Pet)': 25,
+                'Patient & Friendly (Great with Families & Kids)': 22,
+                'Alert & Loyal (Protective Guardian)': 20,
+                'Playful & High-Energy (Outdoor Adventurer)': 15
+            },
+            'Patient & Friendly (Great with Families & Kids)': {
+                'Patient & Friendly (Great with Families & Kids)': 35,
+                'Affectionate & Loving (Cuddly Lap Pet)': 31,
+                'Calm & Gentle (Cozy Couch Companion)': 30,
+                'Playful & High-Energy (Outdoor Adventurer)': 28,
+                'Alert & Loyal (Protective Guardian)': 23,
+                'Curious & Independent (Low Maintenance)': 20
+            },
+            'Alert & Loyal (Protective Guardian)': {
+                'Alert & Loyal (Protective Guardian)': 35,
+                'Playful & High-Energy (Outdoor Adventurer)': 30,
+                'Patient & Friendly (Great with Families & Kids)': 24,
+                'Affectionate & Loving (Cuddly Lap Pet)': 22,
+                'Calm & Gentle (Cozy Couch Companion)': 18,
+                'Curious & Independent (Low Maintenance)': 18
+            }
+        };
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        // Interactive Option Pickers: Soft spring cushion press with subtle amber outline
+        function initInteractiveOptionPickers() {
+            document.querySelectorAll('.quiz-option-label input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', function () {
+                    const groupName = this.name;
+                    document.querySelectorAll(`input[name="${groupName}"]`).forEach(r => {
+                        const parent = r.closest('.quiz-option-label');
+                        if (parent) parent.classList.remove('cushion-spring');
+                    });
+                    const currentLabel = this.closest('.quiz-option-label');
+                    if (currentLabel) {
+                        void currentLabel.offsetWidth; // re-trigger animation
+                        currentLabel.classList.add('cushion-spring');
+                    }
+                });
+            });
+        }
+        initInteractiveOptionPickers();
+
+        // Quiz Submission
+        document.getElementById('formQuiz').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const selectedSpecies = document.querySelector('input[name="species"]:checked').value;
+            const selectedPersonality = document.querySelector('input[name="personality"]:checked').value;
+            const selectedHome = document.querySelector('input[name="homeType"]:checked').value;
+            const selectedHousehold = document.querySelector('input[name="household"]:checked').value;
+            const selectedMedicalCare = document.querySelector('input[name="medicalCare"]:checked').value;
+
+            // Strictly evaluate pets that are currently Available for adoption
+            const candidatePool = petsList.filter(p => {
+                const status = (p.adoptionstatus ?? p.AdoptionStatus ?? 'Available').trim().toLowerCase();
+                return status === 'available';
+            });
+
+            const banner = document.getElementById('quizResultBanner');
+            const noMatchBanner = document.getElementById('quizNoMatchBanner');
+
+            if (candidatePool.length === 0) {
+                if (banner) banner.style.display = 'none';
+                if (noMatchBanner) {
+                    noMatchBanner.style.display = 'block';
+                    noMatchBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                return;
+            }
+
+            if (noMatchBanner) noMatchBanner.style.display = 'none';
+
+            // Calculate multi-dimensional compatibility for each pet
+            const scoredPets = candidatePool.map(pet => {
+                const petSpecies = (pet.species || pet.Species || '').trim();
+                const petPersonality = (pet.personality || pet.Personality || '').trim();
+                const petCondition = (pet.medicalcondition || pet.MedicalCondition || 'Healthy / Cleared for Adoption').trim();
+                const petBehavior = (pet.behavior || pet.Behavior || '').toLowerCase();
+                const petBreed = pet.breed || pet.Breed || '';
+
+                // 1. Species Match (Max 30 pts)
+                let speciesScore = 0;
+                let isSpeciesTarget = false;
+                if (selectedSpecies === 'Any') {
+                    speciesScore = 30;
+                    isSpeciesTarget = true;
+                } else if (selectedSpecies === 'Dog' && petSpecies.toLowerCase() === 'dog') {
+                    speciesScore = 30;
+                    isSpeciesTarget = true;
+                } else if (selectedSpecies === 'Cat' && petSpecies.toLowerCase() === 'cat') {
+                    speciesScore = 30;
+                    isSpeciesTarget = true;
+                } else if (selectedSpecies === 'SmallAnimal' && ['rabbit', 'hamster', 'bird'].some(s => petSpecies.toLowerCase().includes(s))) {
+                    speciesScore = 30;
+                    isSpeciesTarget = true;
+                } else {
+                    speciesScore = 2; // Strong penalty for species mismatch
+                }
+
+                // 2. Personality Synergy (Max 35 pts)
+                const matrix = personalitySynergies[selectedPersonality] || {};
+                let personalityScore = matrix[petPersonality] || 20;
+
+                // 3. Living Environment Fit (Max 15 pts)
+                let livingScore = 12;
+                let livingReason = '';
+                if (selectedHome === 'Apartment') {
+                    if (petSpecies.toLowerCase() !== 'dog' || ['chihuahua', 'french', 'pug', 'shih', 'corgi'].some(b => petBreed.toLowerCase().includes(b))) {
+                        livingScore = 15;
+                        livingReason = 'Compact indoor space is well-suited for this companion.';
+                    } else if (petPersonality.includes('Calm') || petPersonality.includes('Affectionate') || petPersonality.includes('Independent')) {
+                        livingScore = 14;
+                        livingReason = 'Gentle indoor disposition adapts comfortably to apartment routines.';
+                    } else if (petPersonality.includes('Playful & High-Energy')) {
+                        livingScore = 8;
+                        livingReason = 'High energy requires active outdoor park trips when living in an apartment.';
+                    } else {
+                        livingScore = 11;
+                        livingReason = 'Adaptable to apartment living with regular outdoor exercise.';
+                    }
+                } else if (selectedHome === 'House') {
+                    livingScore = 15;
+                    livingReason = 'Fenced garden provides ideal outdoor space for exercise and play.';
+                } else if (selectedHome === 'Acreage') {
+                    livingScore = 15;
+                    livingReason = 'Expansive countryside environment allows plenty of open space to thrive.';
+                }
+
+                // 4. Household Dynamics & Safety (Max 10 pts)
+                let householdScore = 8;
+                let householdReason = '';
+                if (selectedHousehold === 'Children') {
+                    if (petPersonality.includes('Patient & Friendly')) {
+                        householdScore = 10;
+                        householdReason = 'Patient and affectionate temperament is wonderful around kids.';
+                    } else if (petBehavior.includes('friendly with kids') || petBehavior.includes('gentle')) {
+                        householdScore = 10;
+                        householdReason = 'Kennel notes confirm gentle, friendly behavior with children.';
+                    } else if (petBehavior.includes('not friendly') || petBehavior.includes('protective') || petBehavior.includes('strangers')) {
+                        householdScore = 2;
+                        householdReason = 'Attentive protective nature requires an adult-focused environment.';
+                    } else {
+                        householdScore = 7;
+                        householdReason = 'Supervised family introductions recommended.';
+                    }
+                } else if (selectedHousehold === 'Adults') {
+                    householdScore = 10;
+                    householdReason = 'Predictable, adult-only setting allows this companion to bond deeply.';
+                } else if (selectedHousehold === 'MultiPet') {
+                    if (petPersonality.includes('Patient & Friendly') || petPersonality.includes('Curious & Independent')) {
+                        householdScore = 10;
+                        householdReason = 'Sociable disposition harmonizes well with other resident pets.';
+                    } else if (petBehavior.includes('not friendly with other') || petBehavior.includes('aggressive')) {
+                        householdScore = 3;
+                        householdReason = 'Prefers to be the only companion animal in the home.';
+                    } else {
+                        householdScore = 8;
+                        householdReason = 'Gradual introduction to existing pets recommended.';
+                    }
+                }
+
+                // 5. Medical & Health Care Readiness (Max 10 pts)
+                let medicalScore = 10;
+                let medicalReason = '';
+                if (petCondition.includes('Healthy') || petCondition.includes('Cleared')) {
+                    medicalScore = 10;
+                    medicalReason = 'Veterinary verified healthy and cleared for adoption.';
+                } else if (petCondition.includes('Allergies')) {
+                    if (selectedMedicalCare === 'Allergies' || selectedMedicalCare === 'SpecialCare') {
+                        medicalScore = 10;
+                        medicalReason = 'Dietary restrictions align with your readiness to manage allergy care.';
+                    } else {
+                        medicalScore = 6;
+                        medicalReason = 'Has mild allergy/dietary notes requiring thoughtful food selection.';
+                    }
+                } else {
+                    if (selectedMedicalCare === 'SpecialCare') {
+                        medicalScore = 10;
+                        medicalReason = 'Under treatment notes align with your willingness to provide medical care.';
+                    } else {
+                        medicalScore = 3;
+                        medicalReason = 'Ongoing clinical treatment notes recorded in shelter passport.';
+                    }
+                }
+
+                // Total Raw Compatibility
+                let totalScore = speciesScore + personalityScore + livingScore + householdScore + medicalScore;
+                
+                // Extra bonus for exact personality match on target species
+                if (isSpeciesTarget && petPersonality === selectedPersonality) {
+                    totalScore = Math.min(99, totalScore + 3);
+                }
+
+                // If species was not targeted, clamp below 60%
+                if (!isSpeciesTarget) {
+                    totalScore = Math.min(58, totalScore);
+                }
+
+                const finalPercentage = Math.min(98, Math.max(50, Math.round(totalScore)));
+
+                // Personality breakdown note
+                let personalityReason = '';
+                if (petPersonality === selectedPersonality) {
+                    personalityReason = `Exact match with your ideal ${selectedPersonality.split('(')[0].trim()} personality.`;
+                } else {
+                    personalityReason = `${petPersonality.split('(')[0].trim()} temperament shares positive synergies with your routine.`;
+                }
+
+                return {
+                    pet,
+                    score: finalPercentage,
+                    factors: {
+                        personality: personalityReason,
+                        living: livingReason,
+                        household: householdReason,
+                        medical: medicalReason,
+                        summary: `${pet.petname || pet.PetName} matches ${finalPercentage}% based on ${petPersonality.split('(')[0].trim()} personality, ${selectedHome.toLowerCase()} suitability, and health alignment.`
+                    }
+                };
+            });
+
+            // Sort descending by compatibility score
+            scoredPets.sort((a, b) => b.score - a.score);
+
+            const topMatch = scoredPets[0];
+            const pet = topMatch.pet;
+            const petId = pet.petid ?? pet.PetID;
+            const petName = pet.petname ?? pet.PetName ?? 'Companion';
+            const petBreed = pet.breed ?? pet.Breed ?? 'Mixed Breed';
+            const petSpecies = pet.species ?? pet.Species ?? 'Pet';
+            const petAge = (pet.age ?? pet.Age ?? 1) + ' yr old';
+            const petGender = pet.gender ?? pet.Gender ?? 'Unknown';
+            const petPersonality = pet.personality ?? pet.Personality ?? 'Gentle Companion';
+            const petStatus = pet.adoptionstatus ?? pet.AdoptionStatus ?? 'Available';
+            const imgUrl = getPetImageUrl(pet);
+
+            // Populate Featured Hero Card
+            document.getElementById('matchHeading').textContent = `${topMatch.score}% Compatibility Match with ${petName}!`;
+            document.getElementById('matchSubheading').textContent = `Based on your exact lifestyle, housing, and companion preferences, ${petName} is your top recommended match.`;
+            const scoreBadge = document.getElementById('matchScoreBadge');
+            scoreBadge.className = 'status-pill match-pulse-badge';
+            scoreBadge.innerHTML = `
+                <svg class="match-heart-pulse-svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                <span class="match-score-text">${topMatch.score}% Match</span>
+            `;
+            scoreBadge.classList.remove('match-pulse-badge');
+            void scoreBadge.offsetWidth;
+            scoreBadge.classList.add('match-pulse-badge');
+            document.getElementById('matchPetImage').src = imgUrl;
+            document.getElementById('matchPetName').textContent = `${petName} (#PET-${petId})`;
+            document.getElementById('matchPetStatusPill').textContent = petStatus;
+            document.getElementById('matchPetMeta').textContent = `${petSpecies} • ${petBreed} • ${petAge} • ${petGender}`;
+            document.getElementById('matchPetPersonalityText').textContent = petPersonality;
+
+            document.getElementById('factorPersonality').textContent = topMatch.factors.personality;
+            document.getElementById('factorLiving').textContent = topMatch.factors.living;
+            document.getElementById('factorHousehold').textContent = topMatch.factors.household;
+            document.getElementById('factorMedical').textContent = topMatch.factors.medical;
+
+            document.getElementById('btnApplyMatch').href = `adopters.html?petId=${petId}&petName=${encodeURIComponent(petName)}`;
+            document.getElementById('btnViewProfile').href = `pet_profile.html?petId=${petId}`;
+
+            // Populate Runners-Up (other pets with >= 70% match)
+            const runnersUp = scoredPets.slice(1).filter(item => item.score >= 70);
+            const runnersContainer = document.getElementById('runnersUpContainer');
+            const runnersGrid = document.getElementById('runnersUpGrid');
+            runnersGrid.innerHTML = '';
+
+            if (runnersUp.length > 0) {
+                runnersContainer.style.display = 'block';
+                runnersUp.forEach((item, idx) => {
+                    const rPet = item.pet;
+                    const rId = rPet.petid ?? rPet.PetID;
+                    const rName = rPet.petname ?? rPet.PetName ?? 'Companion';
+                    const rBreed = rPet.breed ?? rPet.Breed ?? rPet.species ?? 'Companion';
+                    const rImg = getPetImageUrl(rPet);
+
+                    const card = document.createElement('div');
+                    card.className = 'quiz-runner-card';
+                    card.style.animationDelay = `${Math.min(idx * 30, 300)}ms`;
+                    card.innerHTML = `
+                        <img src="${rImg}" alt="${escapeHtml(rName)}" class="quiz-runner-img" onerror="this.src=DEFAULT_PET_PLACEHOLDER">
+                        <div class="quiz-runner-info">
+                            <div class="quiz-runner-name">${escapeHtml(rName)}</div>
+                            <div class="quiz-runner-meta">${escapeHtml(rBreed)}</div>
+                            <div style="margin-top: 4px; display: flex; align-items: center; justify-content: space-between;">
+                                <span class="status-pill success" style="font-size: 0.72rem; padding: 2px 8px;">${item.score}% Match</span>
+                                <a href="pet_profile.html?petId=${rId}" style="font-size: 0.78rem; font-weight: 700; color: var(--primary);">View</a>
+                            </div>
+                        </div>
+                    `;
+                    runnersGrid.appendChild(card);
+                });
+            } else {
+                runnersContainer.style.display = 'none';
+            }
+
+            banner.style.display = 'block';
+            banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Persist match result to database Compatibility_Results table
+            try {
+                await fetch('/api/compatibility', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: currentUserEmail,
+                        petId: petId,
+                        score: topMatch.score,
+                        factors: topMatch.factors.summary
+                    })
+                });
+            } catch (err) {}
+        });
+    </script>
+</body>
+</html>

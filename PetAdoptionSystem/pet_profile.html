@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Paws - Companion Profile & Health Passport</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=2">
+    <script src="dropdowns.js?v=2"></script>
+</head>
+<body>
+
+    <aside>
+        <div class="brand-block">
+            <div class="brand-mark">
+                <svg viewBox="0 0 24 24">
+                    <ellipse cx="4.8" cy="8.5" rx="1.8" ry="2.6" transform="rotate(-20 4.8 8.5)" />
+                    <ellipse cx="9.5" cy="5.2" rx="2" ry="2.9" transform="rotate(-6 9.5 5.2)" />
+                    <ellipse cx="14.5" cy="5.2" rx="2" ry="2.9" transform="rotate(6 14.5 5.2)" />
+                    <ellipse cx="19.2" cy="8.5" rx="1.8" ry="2.6" transform="rotate(20 19.2 8.5)" />
+                    <path d="M12 9.8c-3.6 0-6.8 2.4-6.8 6.2 0 3.2 2.7 5.5 6.8 5.5s6.8-2.3 6.8-5.5c0-3.8-3.2-6.2-6.8-6.2z" />
+                </svg>
+            </div>
+            <div class="brand-info">
+                <h2>Happy Paws</h2>
+                <span>Rescue & Adoption</span>
+            </div>
+        </div>
+
+        <div class="nav-section-title" id="navSectionTitle">Shelter Menu</div>
+        <nav id="dynamicNav">
+            <!-- Populated dynamically based on user role -->
+        </nav>
+
+        <div class="nav-spacer"></div>
+
+        <div class="user-card">
+            <div class="user-avatar-initial" id="avatarInitial">U</div>
+            <div class="user-meta">
+                <span class="user-meta-name" id="userNameDisplay">User</span>
+                <span class="status-pill role-adopter" id="userRoleBadge">ADOPTER</span>
+            </div>
+        </div>
+
+        <a href="login.html" class="btn-signout" onclick="localStorage.clear()">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Sign Out
+        </a>
+    </aside>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1>Pet Profile</h1>
+                
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button type="button" class="btn btn-sm btn-primary" id="btnEditCompanionProfile" style="display: none;" onclick="editThisPetFromProfile()">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit Pet
+                </button>
+                <button type="button" class="btn btn-sm btn-print-tag" id="btnPrintKennelTag" onclick="window.print()" title="Print physical card for kennel cage">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Print Pet Tag
+                </button>
+                <a href="pets.html" class="btn btn-sm">Return to Our Pets</a>
+            </div>
+        </div>
+
+        <div id="profileLoading" style="text-align: center; padding: 48px 20px;">
+            <div class="paw-loader-container" role="status" aria-live="polite">
+                <div class="paw-step-loader" aria-hidden="true">
+                    <span class="paw-step-pad">
+                        <svg viewBox="0 0 24 24" width="22" height="22">
+                            <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                            <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                            <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                            <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" fill="currentColor" />
+                        </svg></span>
+                    <span class="paw-step-pad">
+                        <svg viewBox="0 0 24 24" width="22" height="22">
+                            <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                            <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                            <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                            <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" fill="currentColor" />
+                        </svg></span>
+                    <span class="paw-step-pad">
+                        <svg viewBox="0 0 24 24" width="22" height="22">
+                            <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                            <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                            <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                            <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" fill="currentColor" />
+                        </svg></span>
+                </div>
+                <div class="paw-loader-text">Loading companion profile...</div>
+            </div>
+        </div>
+
+        <div id="profileCard" style="display: none; flex-direction: column; gap: 24px;">
+            <!-- Top Hero Card with Basic Info and QR Kennel Tag -->
+            <div class="profile-card">
+                <div class="passport-layout-grid">
+                    <!-- Photo Column -->
+                    <div class="profile-photo-container">
+                        <img id="profilePetImage" alt="Pet Photo" class="profile-pet-image">
+                        <div class="profile-photo-tag" id="passportCode"></div>
+                    </div>
+
+                    <!-- Details Column -->
+                    <div class="profile-details-list">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                            <h2 id="passportTitle" style="margin: 0;"></h2>
+                            <span class="status-pill success" id="passportStatus">Available</span>
+                        </div>
+                        <dl>
+                            <dt>Species</dt>
+                            <dd id="passportSpecies">-</dd>
+
+                            <dt>Breed</dt>
+                            <dd id="passportBreed">-</dd>
+
+                            <dt>Estimated Age</dt>
+                            <dd id="passportAge">-</dd>
+
+                            <dt>Gender</dt>
+                            <dd id="passportGender">-</dd>
+
+                            <dt>Date Rescued</dt>
+                            <dd id="passportRegistered">-</dd>
+
+                            <dt>Personality</dt>
+                            <dd id="passportTemperament">-</dd>
+
+                            <dt>Behavior Notes</dt>
+                            <dd id="passportBehavior">-</dd>
+                        </dl>
+
+                        <div style="margin-top: 24px;" id="applyContainer">
+                            <a href="adopters.html" class="btn btn-primary" id="btnApplyPassport">Apply to Adopt</a>
+                        </div>
+                    </div>
+
+                    <!-- Scannable Kennel QR Panel -->
+                    <div class="qr-passport-panel">
+                        <img id="passportQrImg" src="" alt="Kennel QR Code" class="qr-code-img">
+                        <h4 id="qrLabelCode">HP-PET</h4>
+                        <p>Scan QR code to view this pet profile.</p>
+                        <span class="status-pill success" style="font-size: 0.72rem;">Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Health Passport Card -->
+            <div class="clinical-health-card">
+                <div class="clinical-card-head">
+                    <h3>
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                        Medical & Health Records
+                    </h3>
+                    <span class="status-pill success" id="passportClinicalBadge">Verified</span>
+                </div>
+                <div class="health-grid-metrics">
+                    <div class="health-metric-box">
+                        <div class="health-metric-lbl">Medical Condition</div>
+                        <div class="health-metric-val" id="valMedicalCondition">Healthy / Cleared</div>
+                    </div>
+                    <div class="health-metric-box">
+                        <div class="health-metric-lbl">Prescribed Medication</div>
+                        <div class="health-metric-val" id="valMedication">None</div>
+                    </div>
+                    <div class="health-metric-box">
+                        <div class="health-metric-lbl">Vaccination Date</div>
+                        <div class="health-metric-val" id="valVaccinationDate">Up-to-Date</div>
+                    </div>
+                    <div class="health-metric-box">
+                        <div class="health-metric-lbl">Last Veterinary Checkup</div>
+                        <div class="health-metric-val" id="valLastCheckup">Recent</div>
+                    </div>
+                    <div class="health-metric-box">
+                        <div class="health-metric-lbl">Next Scheduled Checkup</div>
+                        <div class="health-metric-val" id="valNextAppointment">To be scheduled</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Separation of Duties Verification
+        const currentRole = (localStorage.getItem('currentUserRole') || '').toLowerCase();
+        const currentUserName = localStorage.getItem('currentUserName') || 'Friend';
+
+        if (currentRole === 'admin') {
+            window.location.href = 'users.html';
+        }
+        if (!currentRole) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userNameDisplay').textContent = currentUserName;
+        document.getElementById('avatarInitial').textContent = currentUserName.charAt(0).toUpperCase();
+
+        const roleBadge = document.getElementById('userRoleBadge');
+        const dynamicNav = document.getElementById('dynamicNav');
+
+        const printTagBtn = document.getElementById('btnPrintKennelTag');
+        if (currentRole === 'staff') {
+            roleBadge.className = 'status-pill role-staff';
+            roleBadge.textContent = 'STAFF';
+
+            document.getElementById('navSectionTitle').textContent = 'Shelter Management';
+            dynamicNav.innerHTML = `
+                <a href="index.html">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Overview
+                </a>
+                <a href="pets.html" class="active">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="6" cy="9" r="2" />
+                        <circle cx="10" cy="5.5" r="2" />
+                        <circle cx="14" cy="5.5" r="2" />
+                        <circle cx="18" cy="9" r="2" />
+                        <path d="M6.5 15.5 C6.5 12.8 8.8 11.5 12 11.5 C15.2 11.5 17.5 12.8 17.5 15.5 C17.5 18.5 15 20.5 12 20.5 C9 20.5 6.5 18.5 6.5 15.5 Z" />
+                    </svg>
+                    Our Pets
+                </a>
+                <a href="adopters.html">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Adoption Applications
+                </a>
+                <a href="archives.html">
+                    <svg viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                    Archives & History
+                </a>
+            `;
+            document.getElementById('applyContainer').style.display = 'none';
+            if (printTagBtn) printTagBtn.style.display = 'inline-flex';
+            const editProfileBtn = document.getElementById('btnEditCompanionProfile');
+            if (editProfileBtn) editProfileBtn.style.display = 'inline-flex';
+        } else {
+            roleBadge.className = 'status-pill role-adopter';
+            roleBadge.textContent = 'ADOPTER';
+
+            document.getElementById('navSectionTitle').textContent = 'Adopter Menu';
+            dynamicNav.innerHTML = `
+                <a href="pets.html" class="active">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="6" cy="9" r="2" />
+                        <circle cx="10" cy="5.5" r="2" />
+                        <circle cx="14" cy="5.5" r="2" />
+                        <circle cx="18" cy="9" r="2" />
+                        <path d="M6.5 15.5 C6.5 12.8 8.8 11.5 12 11.5 C15.2 11.5 17.5 12.8 17.5 15.5 C17.5 18.5 15 20.5 12 20.5 C9 20.5 6.5 18.5 6.5 15.5 Z" />
+                    </svg>
+                    Our Pets
+                </a>
+                <a href="quiz.html">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Pet Match Quiz
+                </a>
+                <a href="adopters.html">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    My Applications
+                </a>
+            `;
+            if (printTagBtn) printTagBtn.style.display = 'none';
+            const editProfileBtn = document.getElementById('btnEditCompanionProfile');
+            if (editProfileBtn) editProfileBtn.style.display = 'none';
+        }
+
+        let currentLoadedPetId = null;
+
+        function editThisPetFromProfile() {
+            if (currentLoadedPetId) {
+                window.location.href = `pets.html?editPetId=${currentLoadedPetId}`;
+            }
+        }
+
+        const DEFAULT_PET_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='360' viewBox='0 0 600 360' fill='%23F4EFEA'><rect width='600' height='360' fill='%23F4EFEA'/><circle cx='270' cy='155' r='18' fill='%23D5C7B8'/><circle cx='330' cy='155' r='18' fill='%23D5C7B8'/><circle cx='235' cy='190' r='15' fill='%23D5C7B8'/><circle cx='365' cy='190' r='15' fill='%23D5C7B8'/><path d='M300 195 C265 195 245 225 260 255 C270 275 330 275 340 255 C355 225 335 195 300 195 Z' fill='%23D5C7B8'/><text x='300' y='305' font-family='sans-serif' font-size='14' font-weight='600' fill='%239E8F80' text-anchor='middle'>No Photo Available</text></svg>";
+
+        function getPetImageUrl(p) {
+            if (p && (p.image_data || p.ImageData)) return p.image_data || p.ImageData;
+            if (p && (p.imageurl || p.ImageURL || p.photo_url || p.photoUrl)) return p.imageurl || p.ImageURL || p.photo_url || p.photoUrl;
+            return DEFAULT_PET_PLACEHOLDER;
+        }
+
+        function formatDate(val) {
+            if (!val) return 'Not recorded';
+            try {
+                const d = new Date(val);
+                if (isNaN(d.getTime())) return String(val).split('T')[0];
+                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            } catch (e) {
+                return String(val);
+            }
+        }
+
+        async function loadProfile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetId = urlParams.get('petId') || urlParams.get('id') || '1';
+
+            try {
+                const res = await fetch('/api/pets');
+                const pets = await res.json();
+                const pet = pets.find(p => String(p.petid ?? p.PetID) === String(targetId)) || pets[0];
+
+                if (pet) {
+                    const id = pet.petid ?? pet.PetID;
+                    currentLoadedPetId = id;
+                    const name = pet.petname ?? pet.PetName;
+                    const species = pet.species ?? pet.Species;
+                    const breed = pet.breed ?? pet.Breed ?? 'Mixed Breed';
+                    const age = (pet.age ?? pet.Age ?? '1') + ' yr';
+                    const gender = pet.gender ?? pet.Gender ?? 'Unknown';
+                    const status = pet.adoptionstatus ?? pet.AdoptionStatus ?? 'Available';
+                    const personality = pet.personality ?? pet.Personality ?? 'Playful, affectionate, and friendly.';
+                    const behavior = pet.behavior ?? pet.Behavior ?? 'Gentle and well-mannered companion.';
+                    const dateRegistered = formatDate(pet.dateregistered ?? pet.DateRegistered);
+
+                    // Clinical Health Records
+                    const medicalCondition = pet.medicalcondition ?? pet.MedicalCondition ?? 'Healthy / Cleared';
+                    const medication = pet.medication ?? pet.Medication ?? 'None';
+                    const vaccinationDate = formatDate(pet.vaccinationdate ?? pet.VaccinationDate);
+                    const lastCheckup = formatDate(pet.lastcheckup ?? pet.LastCheckup);
+                    const nextAppointment = formatDate(pet.nextappointment ?? pet.NextAppointment);
+
+                    const imgUrl = getPetImageUrl(pet);
+
+                    document.getElementById('profilePetImage').src = imgUrl;
+                    document.getElementById('passportCode').textContent = `HP-PET-${id}`;
+                    document.getElementById('passportTitle').textContent = `${name}'s Profile`;
+                    document.getElementById('passportSpecies').textContent = species;
+                    document.getElementById('passportBreed').textContent = breed;
+                    document.getElementById('passportAge').textContent = age;
+                    document.getElementById('passportGender').textContent = gender;
+                    document.getElementById('passportRegistered').textContent = dateRegistered;
+                    document.getElementById('passportTemperament').textContent = personality;
+                    document.getElementById('passportBehavior').textContent = behavior;
+
+                    // Clinical Card Values
+                    document.getElementById('valMedicalCondition').textContent = medicalCondition;
+                    document.getElementById('valMedication').textContent = medication;
+                    document.getElementById('valVaccinationDate').textContent = vaccinationDate;
+                    document.getElementById('valLastCheckup').textContent = lastCheckup;
+                    document.getElementById('valNextAppointment').textContent = nextAppointment;
+
+                    // Dynamic QR Code pointing to this companion's live profile URL
+                    const currentUrl = window.location.origin + window.location.pathname + `?petId=${id}`;
+                    const qrImg = document.getElementById('passportQrImg');
+                    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(currentUrl)}`;
+                    document.getElementById('qrLabelCode').textContent = `HP-PET-${id}`;
+
+                    const isAdopted = (status || '').toLowerCase() === 'adopted';
+                    const statusBadge = document.getElementById('passportStatus');
+                    statusBadge.className = isAdopted ? 'status-pill warning' : 'status-pill success';
+                    statusBadge.textContent = status;
+
+                    const applyBox = document.getElementById('applyContainer');
+                    if (applyBox) {
+                        if (isAdopted) {
+                            applyBox.innerHTML = `
+                                <div class="adopted-notice-box">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                    <span>This companion has found their loving forever home and is already adopted!</span>
+                                </div>
+                            `;
+                        } else if (currentRole === 'adopter') {
+                            applyBox.innerHTML = `
+                                <a href="adopters.html?petId=${id}&petName=${encodeURIComponent(name)}" class="btn btn-primary" id="btnApplyPassport">Apply to Adopt</a>
+                            `;
+                        } else {
+                            applyBox.style.display = 'none';
+                        }
+                    }
+
+                    document.getElementById('profileLoading').style.display = 'none';
+                    document.getElementById('profileCard').style.display = 'flex';
+                } else {
+                    document.getElementById('profileLoading').textContent = 'Companion profile not found.';
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('profileLoading').textContent = 'Failed to load companion profile.';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadProfile);
+    </script>
+</body>
+</html>

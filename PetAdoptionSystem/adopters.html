@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Paws - Adoption Applications</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=2">
+    <script src="dropdowns.js?v=2"></script>
+</head>
+<body>
+
+    <aside>
+        <div class="brand-block">
+            <div class="brand-mark">
+                <svg viewBox="0 0 24 24">
+                    <ellipse cx="4.8" cy="8.5" rx="1.8" ry="2.6" transform="rotate(-20 4.8 8.5)" />
+                    <ellipse cx="9.5" cy="5.2" rx="2" ry="2.9" transform="rotate(-6 9.5 5.2)" />
+                    <ellipse cx="14.5" cy="5.2" rx="2" ry="2.9" transform="rotate(6 14.5 5.2)" />
+                    <ellipse cx="19.2" cy="8.5" rx="1.8" ry="2.6" transform="rotate(20 19.2 8.5)" />
+                    <path d="M12 9.8c-3.6 0-6.8 2.4-6.8 6.2 0 3.2 2.7 5.5 6.8 5.5s6.8-2.3 6.8-5.5c0-3.8-3.2-6.2-6.8-6.2z" />
+                </svg>
+            </div>
+            <div class="brand-info">
+                <h2>Happy Paws</h2>
+                <span>Rescue & Adoption</span>
+            </div>
+        </div>
+
+        <div class="nav-section-title" id="navSectionTitle">Shelter Menu</div>
+        <nav id="dynamicNav">
+            <!-- Dynamically populated based on role -->
+        </nav>
+
+        <div class="nav-spacer"></div>
+
+        <div class="user-card">
+            <div class="user-avatar-initial" id="avatarInitial">U</div>
+            <div class="user-meta">
+                <span class="user-meta-name" id="userNameDisplay">User</span>
+                <span class="status-pill role-adopter" id="userRoleBadge">ADOPTER</span>
+            </div>
+        </div>
+
+        <a href="login.html" class="btn-signout" onclick="localStorage.clear()">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Sign Out
+        </a>
+    </aside>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1 id="pageHeading">Adoption Applications</h1>
+                
+            </div>
+        </div>
+
+        <!-- Adopter Only: Submit Application Form -->
+        <section class="form-panel" id="panelApply" style="display: none;">
+            <div class="form-panel-head">
+                <h3>Submit an Adoption Application</h3>
+                
+            </div>
+            <form id="formApply">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="selectPet">Pet to Adopt</label>
+                        <select id="selectPet" required>
+                            <option value="">Loading available pets...</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="applicantEnvironment">Living Environment</label>
+                        <select id="applicantEnvironment" required>
+                            <option value="">Select Living Environment</option>
+                            <option value="Apartment / Condo (Quiet, indoor lifestyle)">Apartment / Condo (Quiet, indoor lifestyle)</option>
+                            <option value="Single Family Home with Fenced Backyard">Single Family Home with Fenced Backyard</option>
+                            <option value="Suburban Household with Active Family & Kids">Suburban Household with Active Family & Kids</option>
+                            <option value="Rural / Farm Property with Open Outdoor Space">Rural / Farm Property with Open Outdoor Space</option>
+                            <option value="Townhouse Near Parks & Walking Trails">Townhouse Near Parks & Walking Trails</option>
+                            <option value="Other Loving Care Environment">Other Loving Care Environment</option>
+                        </select>
+                    </div>
+
+                    <div class="field span-2">
+                        <label for="applicantNotes">Additional Household Details (Optional)</label>
+                        <input type="text" id="applicantNotes" placeholder="e.g. Fenced garden, experienced dog caregiver, work from home">
+                    </div>
+
+                    <div class="field span-2">
+                        <button type="submit" id="btnSubmitApp" class="btn btn-primary btn-block">Submit Application for Review</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Applications Review Table -->
+        <div class="table-card">
+            <div class="table-card-head">
+                <div>
+                    <h2 id="tableTitle">Adoption Applications</h2>
+                    <p id="tableSubtitle">Status of submitted adoption applications.</p>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">App ID</th>
+                        <th>Applicant</th>
+                        <th>Pet Requested</th>
+                        <th>Home Environment</th>
+                        <th>Date Submitted</th>
+                        <th>Status</th>
+                        <th id="thActions">Decision</th>
+                    </tr>
+                </thead>
+                <tbody id="applicationsBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 28px 16px;">
+                            <div class="paw-loader-container" role="status" aria-live="polite">
+                                <div class="paw-step-loader" aria-hidden="true">
+                                    <span class="paw-step-pad">
+                                        <svg viewBox="0 0 24 24" width="22" height="22">
+                                            <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                                            <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                                            <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                                            <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" fill="currentColor" />
+                                        </svg>
+                                    </span>
+                                    <span class="paw-step-pad">
+                                        <svg viewBox="0 0 24 24" width="22" height="22">
+                                            <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                                            <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                                            <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                                            <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 Z" fill="currentColor" />
+                                        </svg>
+                                    </span>
+                                    <span class="paw-step-pad">
+                                        <svg viewBox="0 0 24 24" width="22" height="22">
+                                            <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                                            <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                                            <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                                            <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 Z" fill="currentColor" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="paw-loader-text">Loading application records...</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // Separation of Duties Verification
+        const currentRole = (localStorage.getItem('currentUserRole') || '').toLowerCase();
+        const currentUserName = localStorage.getItem('currentUserName') || 'Friend';
+        const currentUserEmail = (localStorage.getItem('currentUserEmail') || '').toLowerCase();
+
+        // Administrators do NOT review applications; redirect to User Accounts
+        if (currentRole === 'admin') {
+            window.location.href = 'users.html';
+        }
+        if (!currentRole) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userNameDisplay').textContent = currentUserName;
+        document.getElementById('avatarInitial').textContent = currentUserName.charAt(0).toUpperCase();
+
+        const roleBadge = document.getElementById('userRoleBadge');
+        const dynamicNav = document.getElementById('dynamicNav');
+
+        if (currentRole === 'staff') {
+            roleBadge.className = 'status-pill role-staff';
+            roleBadge.textContent = 'STAFF';
+            document.getElementById('panelApply').style.display = 'none';
+            document.getElementById('thActions').style.display = '';
+            document.getElementById('thActions').textContent = 'Staff Decision';
+            document.getElementById('tableTitle').textContent = 'All Submitted Applications';
+            document.getElementById('tableSubtitle').textContent = '';
+
+            // Shelter Staff Navigation: strictly Overview, Our Pets, Adoption Applications
+            document.getElementById('navSectionTitle').textContent = 'Shelter Management';
+            dynamicNav.innerHTML = `
+                <a href="index.html">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Overview
+                </a>
+                <a href="pets.html">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="6" cy="9" r="2" />
+                        <circle cx="10" cy="5.5" r="2" />
+                        <circle cx="14" cy="5.5" r="2" />
+                        <circle cx="18" cy="9" r="2" />
+                        <path d="M6.5 15.5 C6.5 12.8 8.8 11.5 12 11.5 C15.2 11.5 17.5 12.8 17.5 15.5 C17.5 18.5 15 20.5 12 20.5 C9 20.5 6.5 18.5 6.5 15.5 Z" />
+                    </svg>
+                    Our Pets
+                </a>
+                <a href="adopters.html" class="active">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Adoption Applications
+                </a>
+                <a href="archives.html">
+                    <svg viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                    Archives & History
+                </a>
+            `;
+        } else {
+            // Adopter View: strictly Our Pets, Pet Match Quiz, My Applications (No Pet Profile button!)
+            roleBadge.className = 'status-pill role-adopter';
+            roleBadge.textContent = 'ADOPTER';
+            document.getElementById('panelApply').style.display = 'block';
+            document.getElementById('thActions').style.display = 'none';
+            document.getElementById('tableTitle').textContent = 'My Submitted Applications';
+            document.getElementById('tableSubtitle').textContent = 'Review the current progress of your pet adoption inquiries.';
+
+            document.getElementById('navSectionTitle').textContent = 'Adopter Menu';
+            dynamicNav.innerHTML = `
+                <a href="pets.html">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="6" cy="9" r="2" />
+                        <circle cx="10" cy="5.5" r="2" />
+                        <circle cx="14" cy="5.5" r="2" />
+                        <circle cx="18" cy="9" r="2" />
+                        <path d="M6.5 15.5 C6.5 12.8 8.8 11.5 12 11.5 C15.2 11.5 17.5 12.8 17.5 15.5 C17.5 18.5 15 20.5 12 20.5 C9 20.5 6.5 18.5 6.5 15.5 Z" />
+                    </svg>
+                    Our Pets
+                </a>
+                <a href="quiz.html">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Pet Match Quiz
+                </a>
+                <a href="adopters.html" class="active">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    My Applications
+                </a>
+            `;
+        }
+
+        // Populate Pet Selector
+        async function loadPetsForDropdown() {
+            try {
+                const res = await fetch('/api/pets');
+                const pets = await res.json();
+                const sel = document.getElementById('selectPet');
+                sel.innerHTML = '<option value="">Choose a Companion</option>';
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const preselectedPetId = urlParams.get('petId');
+
+                pets.filter(p => (p.adoptionstatus || '').toLowerCase() === 'available').forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.petid;
+                    opt.textContent = `${p.petname} (${p.species} - ${p.breed})`;
+                    if (preselectedPetId && String(p.petid) === String(preselectedPetId)) {
+                        opt.selected = true;
+                    }
+                    sel.appendChild(opt);
+                });
+            } catch (err) {}
+        }
+
+        const currentUserId = localStorage.getItem('currentUserId') || '';
+
+        // Fetch Applications
+        async function fetchApplications() {
+            const tbody = document.getElementById('applicationsBody');
+            try {
+                const res = await fetch('/api/applications');
+                const apps = await res.json();
+                tbody.innerHTML = '';
+
+                let filteredApps = apps;
+                if (currentRole === 'adopter') {
+                    // Adopters only see their own applications (by email or userId)
+                    filteredApps = apps.filter(a => {
+                        const emailMatch = currentUserEmail && (a.adopteremail || '').toLowerCase() === currentUserEmail;
+                        const userMatch = currentUserId && a.userid && String(a.userid) === String(currentUserId);
+                        return emailMatch || userMatch;
+                    });
+                }
+                window.currentFilteredApps = filteredApps;
+
+                // Welcome Home celebration: If adopter views an approved application, cascade confetti once per session
+                if (currentRole === 'adopter' && filteredApps && filteredApps.length > 0) {
+                    const hasApproved = filteredApps.some(a => (a.status ?? a.Status ?? '').toLowerCase() === 'approved');
+                    if (hasApproved && !sessionStorage.getItem('celebrated_adopter_welcome')) {
+                        sessionStorage.setItem('celebrated_adopter_welcome', 'true');
+                        setTimeout(() => triggerWarmConfetti(2500), 500);
+                    }
+                }
+
+                const colCount = currentRole === 'staff' ? 7 : 6;
+                if (!filteredApps || filteredApps.length === 0) {
+                    tbody.innerHTML = (typeof renderCozyEmptyState === 'function')
+                        ? renderCozyEmptyState({
+                            isTable: true,
+                            colSpan: colCount,
+                            title: 'Everyone is tucked in and cozy.',
+                            desc: currentRole === 'staff' 
+                                ? 'No pending adoption inquiries in the queue. Check back soon for new arrivals!' 
+                                : 'You have no active applications right now. Check back soon for new arrivals!',
+                            actionText: currentRole === 'adopter' ? 'Browse Our Pets' : '',
+                            actionHref: 'pets.html'
+                        })
+                        : `<tr><td colspan="${colCount}" style="text-align: center; color: var(--text-muted); padding: 22px;">No applications found.</td></tr>`;
+                    return;
+                }
+
+                filteredApps.forEach((a, idx) => {
+                    const id = a.applicationid ?? a.ApplicationID;
+                    const applicant = a.adoptername ?? a.AdopterName ?? 'Adopter';
+                    const contact = a.adopteremail ?? a.AdopterEmail ?? '-';
+                    const pet = a.petname ?? a.PetName ?? 'Pet';
+                    const env = a.livingenvironment ?? a.LivingEnvironment ?? a.notes ?? a.Notes ?? 'Standard Home Setup';
+                    const date = (a.applicationdate ?? a.ApplicationDate ?? '').split('T')[0] || '2026-11-07';
+                    const status = a.status ?? a.Status ?? 'Pending';
+
+                    let pillClass = 'warning';
+                    if (status.toLowerCase() === 'approved') pillClass = 'success';
+                    if (status.toLowerCase() === 'rejected') pillClass = 'danger';
+
+                    let actionTd = '';
+                    if (currentRole === 'staff') {
+                        let actionContent = '';
+                        if (status.toLowerCase() === 'pending') {
+                            actionContent = `
+                                <div style="display:flex; gap:6px;">
+                                    <button class="btn btn-sm btn-success" onclick="reviewApplication(${id}, 'Approved')">Accept</button>
+                                    <button class="btn btn-sm btn-danger" onclick="reviewApplication(${id}, 'Rejected')">Decline</button>
+                                </div>
+                            `;
+                        } else if (status.toLowerCase() === 'approved') {
+                            actionContent = `
+                                <div style="display:flex; align-items:center; gap:6px;">
+                                    <span class="status-pill success" style="font-size: 0.74rem; padding: 2px 7px;">Finalized</span>
+                                    <button type="button" class="btn btn-sm btn-primary" style="padding: 2px 8px; font-size: 0.72rem;" onclick="openAdoptionKeepsake('${escapeQuotes(applicant)}', '${escapeQuotes(pet)}', '${date}', '#APP-${id}')">Keepsake</button>
+                                </div>
+                            `;
+                        } else {
+                            actionContent = `<span style="font-size: 0.8rem; color: var(--text-subtle); font-weight:600;">Case Finalized</span>`;
+                        }
+                        actionTd = `<td>${actionContent}</td>`;
+                    }
+
+                    const statusContent = (status.toLowerCase() === 'approved' && currentRole === 'adopter')
+                        ? `<span class="status-pill success">${status}</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left: 6px; padding: 2px 8px; font-size: 0.72rem; vertical-align: middle;" onclick="openAdoptionKeepsake('${escapeQuotes(applicant)}', '${escapeQuotes(pet)}', '${date}', '#APP-${id}')">View Keepsake</button>`
+                        : `<span class="status-pill ${pillClass}">${status}</span>`;
+
+                    const tr = document.createElement('tr');
+                    tr.style.animationDelay = `${Math.min(idx * 30, 300)}ms`;
+                    tr.innerHTML = `
+                        <td class="mono">#APP-${id}</td>
+                        <td>
+                            <div style="font-weight: 700;">${escapeHtml(applicant)}</div>
+                            <div class="mono" style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(contact)}</div>
+                        </td>
+                        <td style="font-weight: 600;">${escapeHtml(pet)}</td>
+                        <td style="font-size: 0.85rem; color: var(--text-main);">${escapeHtml(env)}</td>
+                        <td>${date}</td>
+                        <td>${statusContent}</td>
+                        ${actionTd}
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="${currentRole === 'staff' ? 7 : 6}" style="text-align: center; color: var(--danger); padding: 20px;">Failed to load applications.</td></tr>`;
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function escapeQuotes(str) {
+            if (!str) return '';
+            return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
+        function showToast(msg, type = 'success') {
+            let toast = document.getElementById('toastNotice');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toastNotice';
+                document.body.appendChild(toast);
+            }
+            let iconSvg = '';
+            if (type === 'error') {
+                iconSvg = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+            } else if (type === 'warning') {
+                iconSvg = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+            } else {
+                iconSvg = `<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+            }
+            toast.className = `toast-notice show toast-${type}`;
+            toast.innerHTML = `${iconSvg}<span>${msg}</span>`;
+            if (window._toastTimeout) clearTimeout(window._toastTimeout);
+            window._toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3800);
+        }
+
+        function showConfirmDialog({ title, message, confirmText = 'Confirm', cancelText = 'Cancel', type = 'warning' }) {
+            return new Promise((resolve) => {
+                let modal = document.getElementById('themeConfirmModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'themeConfirmModal';
+                    modal.className = 'confirm-modal-backdrop';
+                    modal.innerHTML = `
+                        <div class="confirm-modal-card">
+                            <div class="confirm-modal-icon-badge" id="confirmModalBadge">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            </div>
+                            <h3 class="confirm-modal-title" id="confirmModalTitle"></h3>
+                            <div class="confirm-modal-body" id="confirmModalBody"></div>
+                            <div class="confirm-modal-actions">
+                                <button type="button" class="btn btn-sm" id="btnConfirmCancel">Cancel</button>
+                                <button type="button" class="btn btn-sm btn-primary" id="btnConfirmOk">Confirm</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+
+                const titleEl = document.getElementById('confirmModalTitle');
+                const bodyEl = document.getElementById('confirmModalBody');
+                const okBtn = document.getElementById('btnConfirmOk');
+                const cancelBtn = document.getElementById('btnConfirmCancel');
+                const badge = document.getElementById('confirmModalBadge');
+
+                titleEl.textContent = title;
+                bodyEl.innerHTML = message;
+                okBtn.textContent = confirmText;
+                cancelBtn.textContent = cancelText;
+
+                if (type === 'danger') {
+                    badge.className = 'confirm-modal-icon-badge danger';
+                    okBtn.className = 'btn btn-sm btn-danger-solid';
+                } else {
+                    badge.className = 'confirm-modal-icon-badge warning';
+                    okBtn.className = 'btn btn-sm btn-primary';
+                }
+
+                modal.style.display = 'flex';
+
+                function cleanup(result) {
+                    modal.style.display = 'none';
+                    okBtn.removeEventListener('click', onOk);
+                    cancelBtn.removeEventListener('click', onCancel);
+                    modal.removeEventListener('click', onBackdrop);
+                    resolve(result);
+                }
+
+                function onOk() { cleanup(true); }
+                function onCancel() { cleanup(false); }
+                function onBackdrop(e) { if (e.target === modal) cleanup(false); }
+
+                okBtn.addEventListener('click', onOk);
+                cancelBtn.addEventListener('click', onCancel);
+                modal.addEventListener('click', onBackdrop);
+            });
+        }
+
+        // Staff Decision Action
+        async function reviewApplication(id, decision) {
+            const isApproval = decision === 'Approved';
+            const decisionVerb = isApproval ? 'approve' : 'decline';
+            const confirmed = await showConfirmDialog({
+                title: isApproval ? 'Approve Application' : 'Decline Application',
+                message: `Are you sure you want to <strong>${decisionVerb}</strong> Application <strong>#APP-${id}</strong>?<br><br>${isApproval ? 'This will record the adoption and finalize the applicant dossier.' : 'This will mark the application as declined.'}`,
+                confirmText: isApproval ? 'Approve Application' : 'Decline Application',
+                type: isApproval ? 'warning' : 'danger'
+            });
+            if (!confirmed) return;
+
+            try {
+                const res = await fetch(`/api/applications/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-User-Role': currentRole
+                    },
+                    body: JSON.stringify({ status: decision })
+                });
+
+                let data = {};
+                try { data = await res.json(); } catch (e) {}
+                if (res.ok && data.success) {
+                    showToast(data.message || 'Application updated.', 'success');
+                    if (isApproval) {
+                        triggerWarmConfetti(2500);
+                        const app = window.currentFilteredApps?.find(a => (a.applicationid ?? a.ApplicationID) == id);
+                        if (app) {
+                            const applicant = app.adoptername ?? app.AdopterName ?? 'Adopter';
+                            const pet = app.petname ?? app.PetName ?? 'Companion';
+                            const date = (app.applicationdate ?? app.ApplicationDate ?? '').split('T')[0] || new Date().toISOString().split('T')[0];
+                            setTimeout(() => {
+                                openAdoptionKeepsake(applicant, pet, date, `#APP-${id}`);
+                            }, 350);
+                        }
+                    }
+                    fetchApplications();
+                } else {
+                    const errMsg = data.message || data.error || (res.status === 403 ? 'Separation of Duties violation: Staff role required.' : `Server error (HTTP ${res.status}).`);
+                    showToast(errMsg, 'error');
+                }
+            } catch (err) {
+                showToast('Connection error while updating application.', 'error');
+            }
+        }
+
+        // Adopter Submit Form
+        document.getElementById('formApply').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const petId = document.getElementById('selectPet').value;
+            const environment = document.getElementById('applicantEnvironment').value;
+            const notes = document.getElementById('applicantNotes').value.trim();
+
+            if (!petId) {
+                showToast('Please select a companion you wish to adopt.', 'warning');
+                return;
+            }
+            if (!environment) {
+                showToast('Please select your home & living environment.', 'warning');
+                return;
+            }
+            if (!currentUserEmail) {
+                showToast('Please sign in before submitting an adoption application.', 'warning');
+                setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+                return;
+            }
+
+            const btn = document.getElementById('btnSubmitApp');
+            btn.disabled = true;
+            btn.textContent = 'Submitting Application...';
+
+            try {
+                const res = await fetch('/api/applications', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        petId: petId,
+                        email: currentUserEmail,
+                        environment: environment,
+                        notes: notes || environment
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast('Your adoption application has been submitted! Our shelter staff will review it shortly.', 'success');
+                    document.getElementById('formApply').reset();
+                    fetchApplications();
+                } else {
+                    showToast(data.message || 'Failed to submit application.', 'error');
+                }
+            } catch (err) {
+                showToast('Connection error while submitting application.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Submit Application for Review';
+            }
+        });
+
+        // Initialize
+        loadPetsForDropdown();
+        fetchApplications();
+
+        // Warm Paper Confetti Celebration (2.5 seconds)
+        function triggerWarmConfetti(durationMs = 2500) {
+            const existing = document.getElementById('warmConfettiCanvas');
+            if (existing) existing.remove();
+
+            const canvas = document.createElement('canvas');
+            canvas.id = 'warmConfettiCanvas';
+            canvas.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:100050;';
+            document.body.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            ctx.scale(dpr, dpr);
+
+            const colors = ['#C45A32', '#E06E44', '#FDBA8C', '#FDE68A', '#FFFDFB', '#D97706'];
+            const flakes = [];
+            const count = 55;
+
+            for (let i = 0; i < count; i++) {
+                flakes.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * -100,
+                    w: 8 + Math.random() * 8,
+                    h: 6 + Math.random() * 10,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vy: 2.4 + Math.random() * 3.2,
+                    vx: -1.2 + Math.random() * 2.4,
+                    sway: Math.random() * Math.PI * 2,
+                    swaySpeed: 0.04 + Math.random() * 0.05,
+                    rotation: Math.random() * Math.PI,
+                    rotSpeed: 0.05 + Math.random() * 0.07,
+                    shape: Math.random() > 0.35 ? 'rect' : 'circle'
+                });
+            }
+
+            const startTime = performance.now();
+            let animId = null;
+
+            function render(now) {
+                const elapsed = now - startTime;
+                if (elapsed > durationMs) {
+                    cancelAnimationFrame(animId);
+                    canvas.remove();
+                    return;
+                }
+
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+                let alpha = 1;
+                if (elapsed > durationMs - 500) {
+                    alpha = (durationMs - elapsed) / 500;
+                }
+                ctx.globalAlpha = Math.max(0, alpha);
+
+                for (const f of flakes) {
+                    f.y += f.vy;
+                    f.sway += f.swaySpeed;
+                    f.x += Math.sin(f.sway) * 1.5 + f.vx * 0.5;
+                    f.rotation += f.rotSpeed;
+
+                    ctx.save();
+                    ctx.translate(f.x, f.y);
+                    ctx.rotate(f.rotation);
+                    ctx.scale(Math.cos(f.rotation * 0.8), 1);
+                    ctx.fillStyle = f.color;
+
+                    if (f.shape === 'rect') {
+                        ctx.fillRect(-f.w / 2, -f.h / 2, f.w, f.h);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, f.w / 2.2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+
+                animId = requestAnimationFrame(render);
+            }
+
+            animId = requestAnimationFrame(render);
+        }
+
+        function formatFriendlyDate(dateStr) {
+            if (!dateStr) return new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            const parts = String(dateStr).split('T')[0].split('-');
+            if (parts.length === 3) {
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const day = parseInt(parts[2], 10);
+                const d = new Date(year, month, day);
+                if (!isNaN(d.getTime())) {
+                    return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                }
+            }
+            return dateStr;
+        }
+
+        // Digital Adoption Keepsake Management
+        function openAdoptionKeepsake(adopter, pet, date) {
+            document.getElementById('keepsakePetName').textContent = pet;
+            document.getElementById('keepsakePetNameText').textContent = pet;
+            document.getElementById('keepsakeAdopterName').textContent = adopter;
+            document.getElementById('keepsakeDate').textContent = formatFriendlyDate(date);
+
+            const modal = document.getElementById('keepsakeModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeAdoptionKeepsake() {
+            const modal = document.getElementById('keepsakeModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function printAdoptionKeepsake() {
+            document.body.classList.add('printing-keepsake');
+            window.print();
+            setTimeout(() => {
+                document.body.classList.remove('printing-keepsake');
+            }, 800);
+        }
+
+        const keepsakeModalEl = document.getElementById('keepsakeModal');
+        if (keepsakeModalEl) {
+            keepsakeModalEl.addEventListener('click', function(e) {
+                if (e.target === this) closeAdoptionKeepsake();
+            });
+        }
+    </script>
+
+    <!-- Digital Adoption Keepsake Modal Component -->
+    <div id="keepsakeModal" class="keepsake-modal-backdrop">
+        <div class="keepsake-modal-card">
+            <button type="button" class="keepsake-close-btn" onclick="closeAdoptionKeepsake()" title="Close Keepsake">&times;</button>
+            <div class="keepsake-header-logo">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" />
+                    <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" />
+                    <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" />
+                    <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" />
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" />
+                </svg>
+                <span class="keepsake-shelter-title">Happy Paws Rescue & Shelter</span>
+            </div>
+            <div class="keepsake-sub-badge">Official Adoption Keepsake & Forever Home Certificate</div>
+            <h2 class="keepsake-title">Welcome Home, <span id="keepsakePetName">Companion</span>!</h2>
+            <p class="keepsake-cert-body">
+                This certifies that <strong id="keepsakeAdopterName" style="color: var(--text-main);">Adopter</strong> has officially welcomed <strong id="keepsakePetNameText" style="color: var(--primary);">Companion</strong> into their heart and home, promising a lifetime of warmth, care, and adventures.
+            </p>
+            <div class="keepsake-date-badge">
+                <div class="keepsake-date-label">Official Adoption Date</div>
+                <div class="keepsake-date-val" id="keepsakeDate">November 8, 2026</div>
+            </div>
+            <div class="keepsake-bottom-row">
+                <div class="keepsake-seal-wrap">
+                    <svg class="keepsake-wax-seal" viewBox="0 0 100 100" width="76" height="76">
+                        <circle cx="50" cy="50" r="46" fill="#A84420" stroke="#C45A32" stroke-width="2" />
+                        <circle cx="50" cy="50" r="42" fill="#C45A32" stroke="#D97706" stroke-width="1.5" stroke-dasharray="3 2" />
+                        <circle cx="50" cy="50" r="33" fill="#B34923" />
+                        <g transform="translate(35, 33) scale(1.25)" fill="#FFE8D6">
+                            <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" />
+                            <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" />
+                            <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" />
+                            <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" />
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" />
+                        </g>
+                        <path id="sealTextPath" d="M 18,50 A 32,32 0 1,1 82,50 A 32,32 0 1,1 18,50" fill="none" />
+                        <text font-size="6.2" font-weight="800" fill="#FFE8D6" letter-spacing="1">
+                            <textPath href="#sealTextPath" startOffset="50%" text-anchor="middle">
+                                HAPPY PAWS • OFFICIAL SEAL
+                            </textPath>
+                        </text>
+                    </svg>
+                    <div>
+                        <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-main);">Shelter Seal of Adoption</div>
+                        <div style="font-size: 0.72rem; color: var(--text-subtle);">Authentic Forever Home Registry</div>
+                    </div>
+                </div>
+                <div class="keepsake-signature-wrap">
+                    <div class="keepsake-signature-line">Happy Paws Shelter</div>
+                    <div class="keepsake-signature-sub">Verified & Sealed by Adoption Board</div>
+                </div>
+            </div>
+            <div class="keepsake-actions">
+                <button type="button" class="btn btn-secondary" onclick="printAdoptionKeepsake()">Print Certificate</button>
+                <button type="button" class="btn btn-primary" onclick="closeAdoptionKeepsake()">Done</button>
+            </div>
+        </div>
+    </div>
+    </script>
+</body>
+</html>

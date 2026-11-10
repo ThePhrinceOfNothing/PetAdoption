@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Paws - Our Pets</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=2">
+    <script src="dropdowns.js?v=2"></script>
+</head>
+<body>
+
+    <aside>
+        <div class="brand-block">
+            <div class="brand-mark">
+                <svg viewBox="0 0 24 24">
+                    <ellipse cx="4.8" cy="8.5" rx="1.8" ry="2.6" transform="rotate(-20 4.8 8.5)" />
+                    <ellipse cx="9.5" cy="5.2" rx="2" ry="2.9" transform="rotate(-6 9.5 5.2)" />
+                    <ellipse cx="14.5" cy="5.2" rx="2" ry="2.9" transform="rotate(6 14.5 5.2)" />
+                    <ellipse cx="19.2" cy="8.5" rx="1.8" ry="2.6" transform="rotate(20 19.2 8.5)" />
+                    <path d="M12 9.8c-3.6 0-6.8 2.4-6.8 6.2 0 3.2 2.7 5.5 6.8 5.5s6.8-2.3 6.8-5.5c0-3.8-3.2-6.2-6.8-6.2z" />
+                </svg>
+            </div>
+            <div class="brand-info">
+                <h2>Happy Paws</h2>
+                <span>Rescue & Adoption</span>
+            </div>
+        </div>
+
+        <div class="nav-section-title" id="navSectionTitle">Shelter Menu</div>
+        <nav id="dynamicNav">
+            <!-- Dynamically populated based on role -->
+        </nav>
+
+        <div class="nav-spacer"></div>
+
+        <div class="user-card">
+            <div class="user-avatar-initial" id="avatarInitial">U</div>
+            <div class="user-meta">
+                <span class="user-meta-name" id="userNameDisplay">User</span>
+                <span class="status-pill role-adopter" id="userRoleBadge">ADOPTER</span>
+            </div>
+        </div>
+
+        <a href="login.html" class="btn-signout" onclick="localStorage.clear()">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Sign Out
+        </a>
+    </aside>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1>Our Pets</h1>
+                
+            </div>
+        </div>
+
+        <!-- Staff Only: Post Pet for Adoption Form -->
+        <section class="form-panel" id="panelAddPet" style="display: none;">
+            <div class="form-panel-head">
+                <h3 id="panelFormTitle">Post Pet for Adoption</h3>
+                
+            </div>
+            <form id="formPetIntake">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="pet_name">Pet Name</label>
+                        <input type="text" id="pet_name" placeholder="e.g. Bella" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="species">Species</label>
+                        <select id="species" required>
+                            <option value="Dog">Dog (Canine)</option>
+                            <option value="Cat">Cat (Feline)</option>
+                            <option value="Rabbit">Rabbit</option>
+                            <option value="Hamster">Small Companion</option>
+                            <option value="Bird">Bird</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="breed">Breed</label>
+                        <input type="text" id="breed" placeholder="e.g. Golden Retriever Mix" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="age">Estimated Age (Years)</label>
+                        <input type="number" id="age" min="0" placeholder="e.g. 2" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="gender">Gender</label>
+                        <select id="gender" required>
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="date_registered">Date Registered</label>
+                        <input type="date" id="date_registered" required>
+                    </div>
+
+                    <div class="field" id="fieldAdoptionStatusWrapper" style="display: none;">
+                        <label for="adoption_status">Adoption Status</label>
+                        <select id="adoption_status">
+                            <option value="Available">Available</option>
+                            <option value="Pending Adoption">Pending Adoption</option>
+                            <option value="Under Treatment">Under Treatment</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="medical_condition_select">Medical Condition</label>
+                        <select id="medical_condition_select" required>
+                            <option value="Healthy / Cleared for Adoption">Healthy / Cleared for Adoption</option>
+                            <option value="Has Allergies">Has Allergies</option>
+                            <option value="Under Treatment / Medication">Under Treatment / Medication</option>
+                            <option value="Chronic Condition / Special Care">Chronic Condition / Special Care</option>
+                            <option value="Post-Surgery / Recovering">Post-Surgery / Recovering</option>
+                            <option value="Other">Other Medical Condition</option>
+                        </select>
+                    </div>
+
+                    <div class="field span-2" id="allergyDetailsWrapper" style="display: none;">
+                        <label for="allergy_details" id="allergyDetailsLabel">Allergy Details & Dietary Restrictions</label>
+                        <input type="text" id="allergy_details" placeholder="e.g. Chicken protein allergy, grain-free diet required, flea bite dermatitis">
+                    </div>
+
+                    <div class="field">
+                        <label for="medication">Prescribed Medication</label>
+                        <input type="text" id="medication" placeholder="e.g. None, Monthly Dewormer" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="vaccination_date">Vaccination Date</label>
+                        <input type="date" id="vaccination_date">
+                    </div>
+
+                    <div class="field">
+                        <label for="last_checkup">Last Veterinary Checkup</label>
+                        <input type="date" id="last_checkup">
+                    </div>
+
+                    <div class="field">
+                        <label for="next_appointment">Next Scheduled Checkup</label>
+                        <input type="date" id="next_appointment">
+                    </div>
+
+                    <div class="field span-2">
+                        <label for="behavior">Behavior Notes</label>
+                        <input type="text" id="behavior" placeholder="e.g. Friendly with kids, house-trained, energetic on walks" required>
+                    </div>
+
+                    <div class="field span-2">
+                        <label for="personality">Personality</label>
+                        <select id="personality" required>
+                            <option value="Calm & Gentle (Cozy Couch Companion)">Calm & Gentle (Cozy Couch Companion)</option>
+                            <option value="Playful & High-Energy (Outdoor Adventurer)">Playful & High-Energy (Outdoor Adventurer)</option>
+                            <option value="Affectionate & Loving (Cuddly Lap Pet)">Affectionate & Loving (Cuddly Lap Pet)</option>
+                            <option value="Curious & Independent (Low Maintenance)">Curious & Independent (Low Maintenance)</option>
+                            <option value="Patient & Friendly (Great with Families & Kids)">Patient & Friendly (Great with Families & Kids)</option>
+                            <option value="Alert & Loyal (Protective Guardian)">Alert & Loyal (Protective Guardian)</option>
+                        </select>
+                    </div>
+
+                    <div class="field span-2">
+                        <label>Pet Photo</label>
+                        <div class="photo-upload-dropzone" id="photoDropzone">
+                            <div class="upload-placeholder" id="uploadPlaceholder">
+                                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                                <div class="upload-title">Click or drop a photo here to upload</div>
+                                <div class="upload-subtitle">Supports JPG, PNG, or WebP. Interactive cropper opens automatically.</div>
+                            </div>
+                            <div class="cropped-preview-box" id="croppedPreviewBox" style="display: none;">
+                                <img id="croppedPreviewImg" src="" alt="Cropped Pet Preview">
+                                <div class="preview-overlay">
+                                    <button type="button" class="btn btn-sm" id="btnReCrop">Re-crop</button>
+                                    <button type="button" class="btn btn-sm" id="btnRemovePhoto" style="background: rgba(220,53,69,0.9); color: #fff;">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" id="petPhotoFileInput" accept="image/*" style="display: none;">
+                    </div>
+
+                    <div class="field span-2" style="display: flex; gap: 10px;">
+                        <button type="submit" id="btnSubmitPet" class="btn btn-primary btn-block">Post Pet for Adoption</button>
+                        <button type="button" id="btnCancelEditPet" class="btn btn-block" style="display: none; background: var(--text-muted); color: #fff;" onclick="cancelEditingPet()">Cancel Edit</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Pet Catalog Grid (Clicking any pet opens its profile) -->
+        <div id="petsContainer">
+            <div style="margin-bottom: 12px;">
+                <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0;">Available Pets for Adoption</h2>
+                
+            </div>
+
+            <div class="pets-catalog-grid" id="petsGridBody">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 36px 16px;">
+                    <div class="paw-loader-container" role="status" aria-live="polite">
+                        <div class="paw-step-loader" aria-hidden="true">
+                            <span class="paw-step-pad">
+                                <svg viewBox="0 0 24 24" width="22" height="22">
+                                    <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                                    <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                                    <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                                    <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <span class="paw-step-pad">
+                                <svg viewBox="0 0 24 24" width="22" height="22">
+                                    <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                                    <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                                    <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                                    <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <span class="paw-step-pad">
+                                <svg viewBox="0 0 24 24" width="22" height="22">
+                                    <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                                    <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                                    <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                                    <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" fill="currentColor" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="paw-loader-text">Finding lovely companions...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Photo Cropping Modal -->
+        <div class="crop-modal-backdrop" id="cropperModal" style="display: none;">
+            <div class="crop-modal">
+                <div class="crop-modal-head">
+                    <h3>Adjust Pet Photo</h3>
+                    
+                </div>
+                <div class="crop-viewport-wrapper" id="cropViewportWrapper">
+                    <canvas id="cropCanvas" width="440" height="250"></canvas>
+                </div>
+                <div class="crop-controls">
+                    <div class="crop-zoom-slider-row">
+                        <label for="zoomRange">Zoom</label>
+                        <input type="range" id="zoomRange" min="1" max="3" step="0.01" value="1">
+                    </div>
+                    <button type="button" class="btn btn-sm" id="btnRotateCrop" title="Rotate 90 degrees">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                        </svg>
+                        Rotate
+                    </button>
+                </div>
+                <div class="crop-modal-actions">
+                    <button type="button" class="btn btn-sm" id="btnCancelCrop">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="btnApplyCrop">Crop & Apply</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Separation of Duties Verification
+        const currentRole = (localStorage.getItem('currentUserRole') || '').toLowerCase();
+        const currentUserName = localStorage.getItem('currentUserName') || 'Friend';
+
+        if (currentRole === 'admin') {
+            window.location.href = 'users.html';
+        }
+        if (!currentRole) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userNameDisplay').textContent = currentUserName;
+        document.getElementById('avatarInitial').textContent = currentUserName.charAt(0).toUpperCase();
+
+        const roleBadge = document.getElementById('userRoleBadge');
+        const dynamicNav = document.getElementById('dynamicNav');
+
+        if (currentRole === 'staff') {
+            roleBadge.className = 'status-pill role-staff';
+            roleBadge.textContent = 'STAFF';
+            document.getElementById('panelAddPet').style.display = 'block';
+
+            // Shelter Staff Navigation: ONLY Overview, Our Pets, Adoption Applications
+            document.getElementById('navSectionTitle').textContent = 'Shelter Management';
+            dynamicNav.innerHTML = `
+                <a href="index.html">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Overview
+                </a>
+                <a href="pets.html" class="active">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="6" cy="9" r="2" />
+                        <circle cx="10" cy="5.5" r="2" />
+                        <circle cx="14" cy="5.5" r="2" />
+                        <circle cx="18" cy="9" r="2" />
+                        <path d="M6.5 15.5 C6.5 12.8 8.8 11.5 12 11.5 C15.2 11.5 17.5 12.8 17.5 15.5 C17.5 18.5 15 20.5 12 20.5 C9 20.5 6.5 18.5 6.5 15.5 Z" />
+                    </svg>
+                    Our Pets
+                </a>
+                <a href="adopters.html">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Adoption Applications
+                </a>
+                <a href="archives.html">
+                    <svg viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                    Archives & History
+                </a>
+            `;
+        } else {
+            // Adopter Navigation: ONLY Our Pets, Pet Match Quiz, My Applications (NO Pet Profiles button!)
+            roleBadge.className = 'status-pill role-adopter';
+            roleBadge.textContent = 'ADOPTER';
+            document.getElementById('panelAddPet').style.display = 'none';
+
+            document.getElementById('navSectionTitle').textContent = 'Adopter Menu';
+            dynamicNav.innerHTML = `
+                <a href="pets.html" class="active">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="6" cy="9" r="2" />
+                        <circle cx="10" cy="5.5" r="2" />
+                        <circle cx="14" cy="5.5" r="2" />
+                        <circle cx="18" cy="9" r="2" />
+                        <path d="M6.5 15.5 C6.5 12.8 8.8 11.5 12 11.5 C15.2 11.5 17.5 12.8 17.5 15.5 C17.5 18.5 15 20.5 12 20.5 C9 20.5 6.5 18.5 6.5 15.5 Z" />
+                    </svg>
+                    Our Pets
+                </a>
+                <a href="quiz.html">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Pet Match Quiz
+                </a>
+                <a href="adopters.html">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    My Applications
+                </a>
+            `;
+        }
+
+        const DEFAULT_PET_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='360' viewBox='0 0 600 360' fill='%23F4EFEA'><rect width='600' height='360' fill='%23F4EFEA'/><circle cx='270' cy='155' r='18' fill='%23D5C7B8'/><circle cx='330' cy='155' r='18' fill='%23D5C7B8'/><circle cx='235' cy='190' r='15' fill='%23D5C7B8'/><circle cx='365' cy='190' r='15' fill='%23D5C7B8'/><path d='M300 195 C265 195 245 225 260 255 C270 275 330 275 340 255 C355 225 335 195 300 195 Z' fill='%23D5C7B8'/><text x='300' y='305' font-family='sans-serif' font-size='14' font-weight='600' fill='%239E8F80' text-anchor='middle'>No Photo Available</text></svg>";
+
+        let editingPetId = null;
+
+        async function fetchPetRoster() {
+            const grid = document.getElementById('petsGridBody');
+            try {
+                const res = await fetch('/api/pets');
+                const pets = await res.json();
+                grid.innerHTML = '';
+
+                if (!res.ok || !Array.isArray(pets)) {
+                    grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--danger); padding: 36px;">Backend returned HTTP ${res.status}. Please restart your terminal with <code>mvn spring-boot:run</code> to load the latest compiled code.</div>`;
+                    return;
+                }
+
+                if (pets.length === 0) {
+                    grid.innerHTML = (typeof renderCozyEmptyState === 'function')
+                        ? renderCozyEmptyState({
+                            fullWidth: true,
+                            title: 'Everyone is tucked in and cozy.',
+                            desc: 'Check back soon for new arrivals!'
+                        })
+                        : '<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 36px;">No pets currently listed.</div>';
+                    return;
+                }
+
+                const availablePets = pets.filter(p => {
+                    const status = (p.adoptionstatus ?? p.AdoptionStatus ?? 'Available').trim().toLowerCase();
+                    return status !== 'adopted';
+                });
+
+                if (availablePets.length === 0) {
+                    grid.innerHTML = (typeof renderCozyEmptyState === 'function')
+                        ? renderCozyEmptyState({
+                            fullWidth: true,
+                            title: 'Everyone is tucked in and cozy.',
+                            desc: 'All rescued companions have found loving homes! Check back soon for new arrivals.'
+                        })
+                        : '<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 36px;">No pets currently awaiting adoption. All companions have found homes!</div>';
+                    return;
+                }
+
+                availablePets.forEach((p, idx) => {
+                    const id = p.petid ?? p.PetID;
+                    const petName = p.petname ?? p.PetName;
+                    const species = p.species ?? p.Species;
+                    const breed = p.breed ?? p.Breed ?? 'Mixed Breed';
+                    const age = (p.age ?? p.Age ?? '1') + ' yr old';
+                    const gender = p.gender ?? p.Gender ?? 'Unknown';
+                    const personality = p.personality ?? p.Personality ?? 'Gentle, friendly, and looking for a loving companion.';
+                    const behavior = p.behavior ?? p.Behavior ?? '';
+                    const medicalCondition = p.medicalcondition ?? p.MedicalCondition ?? 'Healthy / Cleared';
+                    const medication = p.medication ?? p.Medication ?? 'None';
+                    const dateRegistered = p.dateregistered ?? p.DateRegistered ?? '';
+                    const status = p.adoptionstatus ?? p.AdoptionStatus ?? 'Available';
+                    const imgUrl = getPetImageUrl(p);
+
+                    let pillClass = 'success';
+                    if (status.toLowerCase() !== 'available') pillClass = 'warning';
+
+                    const card = document.createElement('div');
+                    card.className = 'pet-companion-card';
+                    card.style.animationDelay = `${Math.min(idx * 30, 300)}ms`;
+                    card.onclick = function(e) {
+                        // If user clicked the Apply button directly, don't trigger card navigation
+                        if (e.target.closest('a')) return;
+                        window.location.href = `pet_profile.html?petId=${id}`;
+                    };
+
+                    card.innerHTML = `
+                        <div class="pet-card-banner">
+                            <img src="${imgUrl}" alt="${escapeHtml(petName)}" class="pet-card-img" loading="lazy" onerror="this.src=DEFAULT_PET_PLACEHOLDER">
+                            <div class="pet-avatar-icon" title="Happy Paws Companion">
+                                <svg viewBox="0 0 24 24">
+                                    <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" />
+                                    <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" />
+                                    <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" />
+                                    <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" />
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="pet-card-body">
+                            <div class="pet-card-title-row">
+                                <h3 class="pet-card-name">${escapeHtml(petName)}</h3>
+                                <span class="status-pill ${pillClass}">${status}</span>
+                            </div>
+                            <div class="pet-card-meta">${escapeHtml(species)} • ${escapeHtml(breed)} • ${age} • ${gender}</div>
+                            <div class="pet-card-personality">${escapeHtml(personality)}</div>
+                            <div style="margin-top: 8px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                                <div><strong style="color: var(--text-main);">Clinical:</strong> ${escapeHtml(medicalCondition)}${medication && medication !== 'None' ? ' • Meds: ' + escapeHtml(medication) : ''}</div>
+                                ${dateRegistered ? `<div style="font-size: 0.76rem; color: var(--text-subtle); margin-top: 2px;">Rescued: ${escapeHtml(dateRegistered)}</div>` : ''}
+                            </div>
+                            <div class="pet-card-footer">
+                                <a href="pet_profile.html?petId=${id}" class="btn btn-sm">View Profile</a>
+                                ${currentRole === 'staff' ? `
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="event.stopPropagation(); startEditPet(${id})" title="Edit companion details">Edit</button>
+                                    <button type="button" class="btn btn-sm" onclick="event.stopPropagation(); triggerPhotoUpdateForPet(${id}, '${escapeQuotes(petName)}')">Update Photo</button>
+                                    <button type="button" class="btn btn-sm btn-demote" onclick="event.stopPropagation(); promptArchivePet(${id}, '${escapeQuotes(petName)}')">Archive</button>
+                                ` : ''}
+                                ${currentRole === 'adopter' && status.toLowerCase() === 'available' ? `
+                                    <a href="adopters.html?petId=${id}&petName=${encodeURIComponent(petName)}" class="btn btn-sm btn-primary">Apply to Adopt</a>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: var(--danger); padding: 36px;">Failed to load pets list.</div>';
+            }
+        }
+
+        // Photo Upload & Interactive Canvas Cropper
+        let rawSelectedImage = null;
+        let cropScale = 1;
+        let cropMinScale = 1;
+        let cropPosX = 0;
+        let cropPosY = 0;
+        let cropRotation = 0;
+        let isCropDragging = false;
+        let cropStartX = 0;
+        let cropStartY = 0;
+        let selectedPetImageData = null;
+
+        const cropCanvas = document.getElementById('cropCanvas');
+        const cropCtx = cropCanvas ? cropCanvas.getContext('2d') : null;
+        const cropW = 440;
+        const cropH = 250;
+
+        const photoDropzone = document.getElementById('photoDropzone');
+        const photoFileInput = document.getElementById('petPhotoFileInput');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const croppedPreviewBox = document.getElementById('croppedPreviewBox');
+        const croppedPreviewImg = document.getElementById('croppedPreviewImg');
+        const cropperModal = document.getElementById('cropperModal');
+        const zoomRange = document.getElementById('zoomRange');
+        const btnRotateCrop = document.getElementById('btnRotateCrop');
+        const btnCancelCrop = document.getElementById('btnCancelCrop');
+        const btnApplyCrop = document.getElementById('btnApplyCrop');
+        const btnReCrop = document.getElementById('btnReCrop');
+        const btnRemovePhoto = document.getElementById('btnRemovePhoto');
+
+        if (photoDropzone && photoFileInput) {
+            photoDropzone.addEventListener('click', (e) => {
+                if (e.target.closest('button')) return;
+                photoFileInput.click();
+            });
+
+            photoDropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                photoDropzone.style.borderColor = 'var(--primary)';
+            });
+
+            photoDropzone.addEventListener('dragleave', () => {
+                photoDropzone.style.borderColor = '';
+            });
+
+            photoDropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                photoDropzone.style.borderColor = '';
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    processSelectedFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            photoFileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    processSelectedFile(e.target.files[0]);
+                }
+            });
+        }
+
+        let activeUpdatingPetId = null;
+        let activeUpdatingPetName = null;
+
+        function showConfirmDialog({
+            title = 'Confirm Action',
+            message = 'Are you sure you want to proceed?',
+            confirmText = 'Confirm',
+            cancelText = 'Cancel',
+            type = 'warning'
+        } = {}) {
+            return new Promise((resolve) => {
+                let modal = document.getElementById('themeConfirmModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'themeConfirmModal';
+                    modal.className = 'confirm-modal-backdrop';
+                    modal.innerHTML = `
+                        <div class="confirm-modal-card">
+                            <div class="confirm-modal-icon-badge" id="confirmModalBadge">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            </div>
+                            <h3 class="confirm-modal-title" id="confirmModalTitle"></h3>
+                            <div class="confirm-modal-body" id="confirmModalBody"></div>
+                            <div class="confirm-modal-actions">
+                                <button type="button" class="btn btn-sm" id="btnConfirmCancel">Cancel</button>
+                                <button type="button" class="btn btn-sm btn-primary" id="btnConfirmOk">Confirm</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+
+                const titleEl = document.getElementById('confirmModalTitle');
+                const bodyEl = document.getElementById('confirmModalBody');
+                const okBtn = document.getElementById('btnConfirmOk');
+                const cancelBtn = document.getElementById('btnConfirmCancel');
+                const badge = document.getElementById('confirmModalBadge');
+
+                titleEl.textContent = title;
+                bodyEl.innerHTML = message;
+                okBtn.textContent = confirmText;
+                cancelBtn.textContent = cancelText;
+
+                if (type === 'danger') {
+                    badge.className = 'confirm-modal-icon-badge danger';
+                    okBtn.className = 'btn btn-sm btn-danger-solid';
+                } else {
+                    badge.className = 'confirm-modal-icon-badge warning';
+                    okBtn.className = 'btn btn-sm btn-primary';
+                }
+
+                modal.style.display = 'flex';
+
+                function cleanup(result) {
+                    modal.style.display = 'none';
+                    okBtn.removeEventListener('click', onOk);
+                    cancelBtn.removeEventListener('click', onCancel);
+                    modal.removeEventListener('click', onBackdrop);
+                    resolve(result);
+                }
+
+                function onOk() { cleanup(true); }
+                function onCancel() { cleanup(false); }
+                function onBackdrop(e) { if (e.target === modal) cleanup(false); }
+
+                okBtn.addEventListener('click', onOk);
+                cancelBtn.addEventListener('click', onCancel);
+                modal.addEventListener('click', onBackdrop);
+            });
+        }
+
+        async function promptArchivePet(id, name) {
+            const confirmed = await showConfirmDialog({
+                title: 'Archive Companion',
+                message: `Are you sure you want to archive <strong>${escapeHtml(name)} (#PET-${id})</strong>?<br><br>A full recovery snapshot with clinical notes will be preserved in <strong>Archives & History</strong>.`,
+                confirmText: 'Move to Archives',
+                type: 'warning'
+            });
+            if (!confirmed) return;
+            try {
+                const res = await fetch(`/api/pets/${id}/archive`, {
+                    method: 'POST',
+                    headers: {
+                        'X-User-Role': currentRole
+                    }
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.ok && data.success) {
+                    showToast(data.message || `${name} moved to Archives!`, 'success');
+                    fetchPetRoster();
+                } else {
+                    const err = data.message || data.error || (res.status === 404 ? 'Archive service not active. Please restart your backend terminal.' : `Failed to archive pet (HTTP ${res.status}).`);
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Network error while archiving: ' + err.message, 'error');
+            }
+        }
+
+        function triggerPhotoUpdateForPet(id, name) {
+            activeUpdatingPetId = id;
+            activeUpdatingPetName = name;
+            if (photoFileInput) {
+                photoFileInput.value = '';
+                photoFileInput.click();
+            }
+        }
+
+        function processSelectedFile(file) {
+            if (!file.type || !file.type.startsWith('image/')) {
+                showToast('Please select a valid image file (JPG, PNG, WebP).', 'warning');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                rawSelectedImage = new Image();
+                rawSelectedImage.onload = function() {
+                    cropRotation = 0;
+                    initCropper();
+                    if (cropperModal) cropperModal.style.display = 'flex';
+                };
+                rawSelectedImage.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function initCropper() {
+            if (!rawSelectedImage) return;
+            const isSideways = cropRotation % 180 !== 0;
+            const iw = isSideways ? rawSelectedImage.height : rawSelectedImage.width;
+            const ih = isSideways ? rawSelectedImage.width : rawSelectedImage.height;
+
+            cropMinScale = Math.max(cropW / iw, cropH / ih);
+            cropScale = cropMinScale;
+            if (zoomRange) {
+                zoomRange.min = cropMinScale;
+                zoomRange.max = cropMinScale * 3.5;
+                zoomRange.step = 0.005;
+                zoomRange.value = cropScale;
+            }
+            cropPosX = cropW / 2;
+            cropPosY = cropH / 2;
+            renderCropCanvas();
+        }
+
+        function renderCropCanvas() {
+            if (!cropCtx || !rawSelectedImage) return;
+            cropCtx.clearRect(0, 0, cropW, cropH);
+            cropCtx.save();
+            cropCtx.translate(cropPosX, cropPosY);
+            cropCtx.rotate((cropRotation * Math.PI) / 180);
+            cropCtx.drawImage(
+                rawSelectedImage,
+                -rawSelectedImage.width * cropScale / 2,
+                -rawSelectedImage.height * cropScale / 2,
+                rawSelectedImage.width * cropScale,
+                rawSelectedImage.height * cropScale
+            );
+            cropCtx.restore();
+        }
+
+        if (cropCanvas) {
+            function startDrag(clientX, clientY) {
+                isCropDragging = true;
+                cropStartX = clientX - cropPosX;
+                cropStartY = clientY - cropPosY;
+            }
+            function moveDrag(clientX, clientY) {
+                if (!isCropDragging) return;
+                cropPosX = clientX - cropStartX;
+                cropPosY = clientY - cropStartY;
+                renderCropCanvas();
+            }
+            function endDrag() {
+                isCropDragging = false;
+            }
+
+            cropCanvas.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                startDrag(e.clientX, e.clientY);
+            });
+            window.addEventListener('mousemove', (e) => {
+                moveDrag(e.clientX, e.clientY);
+            });
+            window.addEventListener('mouseup', endDrag);
+
+            cropCanvas.addEventListener('touchstart', (e) => {
+                if (e.touches && e.touches.length === 1) {
+                    startDrag(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches && e.touches.length === 1 && isCropDragging) {
+                    moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+            window.addEventListener('touchend', endDrag);
+        }
+
+        if (zoomRange) {
+            zoomRange.addEventListener('input', (e) => {
+                cropScale = parseFloat(e.target.value);
+                renderCropCanvas();
+            });
+        }
+
+        if (btnRotateCrop) {
+            btnRotateCrop.addEventListener('click', () => {
+                cropRotation = (cropRotation + 90) % 360;
+                initCropper();
+            });
+        }
+
+        function closeCropper() {
+            if (cropperModal) cropperModal.style.display = 'none';
+            if (photoFileInput) photoFileInput.value = '';
+            activeUpdatingPetId = null;
+            activeUpdatingPetName = null;
+        }
+
+        if (btnCancelCrop) {
+            btnCancelCrop.addEventListener('click', closeCropper);
+        }
+
+        if (btnApplyCrop) {
+            btnApplyCrop.addEventListener('click', async () => {
+                if (!rawSelectedImage) return;
+                const exportCanvas = document.createElement('canvas');
+                exportCanvas.width = 640;
+                exportCanvas.height = 364;
+                const expCtx = exportCanvas.getContext('2d');
+                const ratio = 640 / cropW;
+
+                expCtx.save();
+                expCtx.translate(cropPosX * ratio, cropPosY * ratio);
+                expCtx.rotate((cropRotation * Math.PI) / 180);
+                expCtx.drawImage(
+                    rawSelectedImage,
+                    -rawSelectedImage.width * cropScale * ratio / 2,
+                    -rawSelectedImage.height * cropScale * ratio / 2,
+                    rawSelectedImage.width * cropScale * ratio,
+                    rawSelectedImage.height * cropScale * ratio
+                );
+                expCtx.restore();
+
+                const croppedData = exportCanvas.toDataURL('image/jpeg', 0.88);
+
+                // If updating an existing pet photo
+                if (activeUpdatingPetId) {
+                    const targetId = activeUpdatingPetId;
+                    const targetName = activeUpdatingPetName;
+                    closeCropper();
+                    try {
+                        const res = await fetch(`/api/pets/${targetId}/image`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-User-Role': currentRole
+                            },
+                            body: JSON.stringify({ image_data: croppedData })
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.success) {
+                            showToast(`Photo updated successfully for ${targetName}!`, 'success');
+                            fetchPetRoster();
+                        } else {
+                            showToast(data.message || 'Failed to update photo.', 'error');
+                        }
+                    } catch (err) {
+                        showToast('Error uploading photo: ' + err.message, 'error');
+                    }
+                    return;
+                }
+
+                // Otherwise, attach to intake form preview
+                selectedPetImageData = croppedData;
+                if (croppedPreviewImg) croppedPreviewImg.src = selectedPetImageData;
+                if (croppedPreviewBox) croppedPreviewBox.style.display = 'block';
+                if (uploadPlaceholder) uploadPlaceholder.style.display = 'none';
+                closeCropper();
+            });
+        }
+
+        function reCropPhoto() {
+            if (rawSelectedImage && cropperModal) {
+                cropperModal.style.display = 'flex';
+                renderCropCanvas();
+            }
+        }
+
+        if (btnReCrop) {
+            btnReCrop.addEventListener('click', (e) => {
+                e.stopPropagation();
+                reCropPhoto();
+            });
+        }
+
+        function removePhoto() {
+            selectedPetImageData = null;
+            rawSelectedImage = null;
+            if (photoFileInput) photoFileInput.value = '';
+            if (croppedPreviewImg) croppedPreviewImg.src = '';
+            if (croppedPreviewBox) croppedPreviewBox.style.display = 'none';
+            if (uploadPlaceholder) uploadPlaceholder.style.display = 'flex';
+        }
+
+        if (btnRemovePhoto) {
+            btnRemovePhoto.addEventListener('click', (e) => {
+                e.stopPropagation();
+                removePhoto();
+            });
+        }
+
+        function getPetImageUrl(p) {
+            if (p && (p.image_data || p.ImageData)) return p.image_data || p.ImageData;
+            if (p && (p.imageurl || p.ImageURL || p.photo_url || p.photoUrl)) return p.imageurl || p.ImageURL || p.photo_url || p.photoUrl;
+            return DEFAULT_PET_PLACEHOLDER;
+        }
+
+                async function startEditPet(petId) {
+            if (currentRole !== 'staff') {
+                showToast('Only Shelter Staff can edit companion profiles.', 'error');
+                return;
+            }
+            try {
+                const res = await fetch(`/api/pets/${petId}`);
+                if (!res.ok) {
+                    showToast(`Could not load pet #${petId} for editing.`, 'error');
+                    return;
+                }
+                const pet = await res.json();
+                editingPetId = petId;
+
+                const panel = document.getElementById('panelAddPet');
+                if (panel) panel.style.display = 'block';
+
+                const title = document.getElementById('panelFormTitle');
+                const desc = document.getElementById('panelFormDesc');
+                const btnSubmit = document.getElementById('btnSubmitPet');
+                const btnCancel = document.getElementById('btnCancelEditPet');
+                const statusWrapper = document.getElementById('fieldAdoptionStatusWrapper');
+
+                if (title) title.textContent = `Edit Companion Profile (#PET-${petId})`;
+                if (desc) desc.textContent = '';
+                if (btnSubmit) btnSubmit.textContent = 'Save Changes';
+                if (btnCancel) btnCancel.style.display = 'block';
+                if (statusWrapper) statusWrapper.style.display = 'flex';
+
+                const pName = pet.petname ?? pet.PetName ?? '';
+                const pSpecies = pet.species ?? pet.Species ?? 'Dog';
+                const pBreed = pet.breed ?? pet.Breed ?? '';
+                const pAge = pet.age ?? pet.Age ?? 1;
+                const pGender = pet.gender ?? pet.Gender ?? 'Male';
+                const pDateReg = pet.dateregistered ?? pet.DateRegistered ?? '';
+                const pStatus = pet.adoptionstatus ?? pet.AdoptionStatus ?? 'Available';
+                const pPersonality = pet.personality ?? pet.Personality ?? '';
+                const pBehavior = pet.behavior ?? pet.Behavior ?? '';
+                const pMedication = pet.medication ?? pet.Medication ?? 'None';
+                const pVax = pet.vaccinationdate ?? pet.VaccinationDate ?? '';
+                const pLastCheck = pet.lastcheckup ?? pet.LastCheckup ?? '';
+                const pNextAppt = pet.nextappointment ?? pet.NextAppointment ?? '';
+                const pCondition = pet.medicalcondition ?? pet.MedicalCondition ?? 'Healthy / Cleared for Adoption';
+                const pImage = pet.image_data ?? pet.ImageData ?? '';
+
+                document.getElementById('pet_name').value = pName;
+                document.getElementById('species').value = pSpecies;
+                document.getElementById('breed').value = pBreed;
+                document.getElementById('age').value = pAge;
+                document.getElementById('gender').value = pGender;
+                if (pDateReg) document.getElementById('date_registered').value = pDateReg.substring(0, 10);
+                document.getElementById('adoption_status').value = pStatus;
+                if (pPersonality) document.getElementById('personality').value = pPersonality;
+                document.getElementById('behavior').value = pBehavior;
+                document.getElementById('medication').value = pMedication;
+                if (pVax) document.getElementById('vaccination_date').value = pVax.substring(0, 10);
+                if (pLastCheck) document.getElementById('last_checkup').value = pLastCheck.substring(0, 10);
+                if (pNextAppt) document.getElementById('next_appointment').value = pNextAppt.substring(0, 10);
+
+                const medSelect = document.getElementById('medical_condition_select');
+                const allergyWrap = document.getElementById('allergyDetailsWrapper');
+                const allergyInput = document.getElementById('allergy_details');
+                const allergyLabel = document.getElementById('allergyDetailsLabel');
+
+                if (pCondition.toLowerCase().includes('allerg')) {
+                    medSelect.value = 'Has Allergies';
+                    allergyWrap.style.display = 'flex';
+                    allergyLabel.textContent = 'Specify Allergies & Dietary Restrictions';
+                    allergyInput.value = pCondition.replace(/^Allergies:\s*/i, '').replace(/^Has Allergies\s*\(?/i, '').replace(/\)$/, '').trim();
+                    allergyInput.required = true;
+                } else {
+                    let matched = false;
+                    for (let opt of medSelect.options) {
+                        if (opt.value === pCondition) {
+                            medSelect.value = pCondition;
+                            matched = true;
+                            break;
+                        }
+                    }
+                    if (!matched) {
+                        medSelect.value = 'Other';
+                        allergyWrap.style.display = 'flex';
+                        allergyLabel.textContent = 'Specify Medical Condition';
+                        allergyInput.value = pCondition;
+                        allergyInput.required = true;
+                    } else {
+                        allergyWrap.style.display = 'none';
+                        allergyInput.value = '';
+                        allergyInput.required = false;
+                    }
+                }
+
+                if (pImage) {
+                    selectedPetImageData = pImage;
+                    if (croppedPreviewImg) croppedPreviewImg.src = pImage;
+                    if (croppedPreviewBox) croppedPreviewBox.style.display = 'block';
+                    if (uploadPlaceholder) uploadPlaceholder.style.display = 'none';
+                } else {
+                    removePhoto();
+                }
+
+                panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (err) {
+                showToast('Error loading companion for editing: ' + err.message, 'error');
+            }
+        }
+
+        function cancelEditingPet() {
+            editingPetId = null;
+            const form = document.getElementById('formPetIntake');
+            if (form) form.reset();
+
+            const title = document.getElementById('panelFormTitle');
+            const desc = document.getElementById('panelFormDesc');
+            const btnSubmit = document.getElementById('btnSubmitPet');
+            const btnCancel = document.getElementById('btnCancelEditPet');
+            const statusWrapper = document.getElementById('fieldAdoptionStatusWrapper');
+            const allergyWrap = document.getElementById('allergyDetailsWrapper');
+            const dateReg = document.getElementById('date_registered');
+
+            if (title) title.textContent = 'Post Pet for Adoption';
+            if (desc) desc.textContent = '';
+            if (btnSubmit) btnSubmit.textContent = 'Post Pet for Adoption';
+            if (btnCancel) btnCancel.style.display = 'none';
+            if (statusWrapper) statusWrapper.style.display = 'none';
+            if (allergyWrap) allergyWrap.style.display = 'none';
+            if (dateReg) dateReg.value = new Date().toISOString().split('T')[0];
+
+            removePhoto();
+
+            if (window.location.search.includes('editPetId')) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function escapeQuotes(str) {
+            if (!str) return '';
+            return str.replace(/'/g, "\\'");
+        }
+
+        function showToast(msg, type = 'success') {
+            let toast = document.getElementById('toastNotice');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toastNotice';
+                document.body.appendChild(toast);
+            }
+            let iconSvg = '';
+            if (type === 'error') {
+                iconSvg = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+            } else if (type === 'warning') {
+                iconSvg = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+            } else {
+                iconSvg = `<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+            }
+            toast.className = `toast-notice show toast-${type}`;
+            toast.innerHTML = `${iconSvg}<span>${msg}</span>`;
+            if (window._toastTimeout) clearTimeout(window._toastTimeout);
+            window._toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3800);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetchPetRoster();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('editPetId');
+            if (editId) {
+                startEditPet(editId);
+            }
+
+            const dateRegisteredInput = document.getElementById('date_registered');
+            if (dateRegisteredInput) {
+                dateRegisteredInput.value = new Date().toISOString().split('T')[0];
+            }
+
+            const medSelect = document.getElementById('medical_condition_select');
+            const allergyWrap = document.getElementById('allergyDetailsWrapper');
+            const allergyInput = document.getElementById('allergy_details');
+            const allergyLabel = document.getElementById('allergyDetailsLabel');
+
+            if (medSelect && allergyWrap && allergyInput && allergyLabel) {
+                medSelect.addEventListener('change', function () {
+                    const val = this.value;
+                    if (val === 'Has Allergies') {
+                        allergyWrap.style.display = 'flex';
+                        allergyLabel.textContent = 'Specify Allergies & Dietary Restrictions';
+                        allergyInput.placeholder = 'e.g. Chicken protein allergy, grain-free diet required, flea dermatitis';
+                        allergyInput.required = true;
+                        allergyInput.focus();
+                    } else if (val === 'Other') {
+                        allergyWrap.style.display = 'flex';
+                        allergyLabel.textContent = 'Specify Medical Condition';
+                        allergyInput.placeholder = 'e.g. Mild hip dysplasia, joint supplements needed';
+                        allergyInput.required = true;
+                        allergyInput.focus();
+                    } else if (val === 'Under Treatment / Medication' || val === 'Chronic Condition / Special Care' || val === 'Post-Surgery / Recovering') {
+                        allergyWrap.style.display = 'flex';
+                        allergyLabel.textContent = val + ' Notes (Optional)';
+                        allergyInput.placeholder = 'e.g. Ear drops daily, stitches removal scheduled';
+                        allergyInput.required = false;
+                    } else {
+                        allergyWrap.style.display = 'none';
+                        allergyInput.required = false;
+                        allergyInput.value = '';
+                    }
+                });
+            }
+
+            function getResolvedMedicalCondition() {
+                const sel = document.getElementById('medical_condition_select');
+                const input = document.getElementById('allergy_details');
+                const val = sel ? sel.value : 'Healthy / Cleared for Adoption';
+                const detail = input ? input.value.trim() : '';
+
+                if (val === 'Has Allergies') {
+                    return detail ? `Allergies: ${detail}` : 'Has Allergies';
+                }
+                if (val === 'Other') {
+                    return detail ? detail : 'Other Medical Condition';
+                }
+                if (detail) {
+                    return `${val} (${detail})`;
+                }
+                return val;
+            }
+
+            const form = document.getElementById('formPetIntake');
+            if (form) {
+                form.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+                    const payload = {
+                        pet_name: document.getElementById('pet_name').value.trim(),
+                        species: document.getElementById('species').value,
+                        breed: document.getElementById('breed').value.trim(),
+                        age: parseInt(document.getElementById('age').value, 10) || 1,
+                        gender: document.getElementById('gender').value,
+                        personality: document.getElementById('personality').value,
+                        date_registered: document.getElementById('date_registered').value || new Date().toISOString().split('T')[0],
+                        medical_condition: getResolvedMedicalCondition(),
+                        medication: document.getElementById('medication').value.trim() || 'None',
+                        vaccination_date: document.getElementById('vaccination_date').value || null,
+                        last_checkup: document.getElementById('last_checkup').value || null,
+                        next_appointment: document.getElementById('next_appointment').value || null,
+                        behavior: document.getElementById('behavior').value.trim() || 'Friendly companion',
+                        image_data: selectedPetImageData || ''
+                    };
+
+                    if (editingPetId) {
+                        const statusInput = document.getElementById('adoption_status');
+                        if (statusInput) payload.adoption_status = statusInput.value;
+                    }
+
+                    const targetUrl = editingPetId ? `/api/pets/${editingPetId}` : '/api/pets';
+                    const targetMethod = editingPetId ? 'PUT' : 'POST';
+
+                    try {
+                        const res = await fetch(targetUrl, {
+                            method: targetMethod,
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-User-Role': currentRole
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        let data = {};
+                        try { data = await res.json(); } catch (e) {}
+
+                        if (res.ok && data.success) {
+                            showToast(data.message || (editingPetId ? 'Companion updated successfully!' : 'Pet posted successfully!'), 'success');
+                            cancelEditingPet();
+                            fetchPetRoster();
+                        } else {
+                            const errorMsg = data.message || data.error || (res.status === 403 ? 'Separation of Duties violation: Staff role required.' : `Server error (HTTP ${res.status}). Please restart your backend terminal.`);
+                            showToast(errorMsg, 'error');
+                        }
+                    } catch (err) {
+                        showToast('Network Error: ' + err.message, 'error');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

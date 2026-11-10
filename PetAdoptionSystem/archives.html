@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Paws - Companion Archives & History</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=2">
+    <script src="dropdowns.js?v=2"></script>
+</head>
+<body>
+
+    <aside>
+        <div class="brand-block">
+            <div class="brand-mark">
+                <svg viewBox="0 0 24 24">
+                    <ellipse cx="4.8" cy="8.5" rx="1.8" ry="2.6" transform="rotate(-20 4.8 8.5)" />
+                    <ellipse cx="9.5" cy="5.2" rx="2" ry="2.9" transform="rotate(-6 9.5 5.2)" />
+                    <ellipse cx="14.5" cy="5.2" rx="2" ry="2.9" transform="rotate(6 14.5 5.2)" />
+                    <ellipse cx="19.2" cy="8.5" rx="1.8" ry="2.6" transform="rotate(20 19.2 8.5)" />
+                    <path d="M12 9.8c-3.6 0-6.8 2.4-6.8 6.2 0 3.2 2.7 5.5 6.8 5.5s6.8-2.3 6.8-5.5c0-3.8-3.2-6.2-6.8-6.2z" />
+                </svg>
+            </div>
+            <div class="brand-info">
+                <h2>Happy Paws</h2>
+                <span>Rescue & Adoption</span>
+            </div>
+        </div>
+
+        <div class="nav-section-title">Shelter Management</div>
+        <nav>
+            <a href="index.html">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Overview
+            </a>
+            <a href="pets.html">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="6" cy="9" r="2" />
+                    <circle cx="10" cy="5.5" r="2" />
+                    <circle cx="14" cy="5.5" r="2" />
+                    <circle cx="18" cy="9" r="2" />
+                    <path d="M6.5 15.5 C6.5 12.8 8.8 11.5 12 11.5 C15.2 11.5 17.5 12.8 17.5 15.5 C17.5 18.5 15 20.5 12 20.5 C9 20.5 6.5 18.5 6.5 15.5 Z" />
+                </svg>
+                Our Pets
+            </a>
+            <a href="adopters.html">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Adoption Applications
+            </a>
+            <a href="archives.html" class="active">
+                <svg viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                Archives & History
+            </a>
+        </nav>
+
+        <div class="nav-spacer"></div>
+
+        <div class="user-card">
+            <div class="user-avatar-initial" id="avatarInitial">S</div>
+            <div class="user-meta">
+                <span class="user-meta-name" id="userNameDisplay">Shelter Staff</span>
+                <span class="status-pill role-staff" id="userRoleBadge">STAFF</span>
+            </div>
+        </div>
+
+        <a href="login.html" class="btn-signout" onclick="localStorage.clear()">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Sign Out
+        </a>
+    </aside>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1>Pet Archives & History</h1>
+            </div>
+            <div>
+                <a href="pets.html" class="btn btn-sm">Return to Our Pets</a>
+            </div>
+        </div>
+
+        <!-- Metrics Overview -->
+        <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
+            <div class="stat-card">
+                <div class="stat-card-title">Total Archived Records</div>
+                <div class="stat-card-value" id="countTotalArchives">0</div>
+                
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Successfully Adopted</div>
+                <div class="stat-card-value" id="countAdoptedArchives" style="color: #2F855A;">0</div>
+                
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Administrative Removals</div>
+                <div class="stat-card-value" id="countRemovedArchives" style="color: var(--primary);">0</div>
+                
+            </div>
+        </div>
+
+        <!-- Filters & Search Toolbar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+            <div class="user-filter-bar" style="margin-bottom: 0;">
+                <button type="button" class="filter-tab active" data-filter="all" onclick="setArchiveFilter('all')">All Records</button>
+                <button type="button" class="filter-tab" data-filter="adopted" onclick="setArchiveFilter('adopted')">Successfully Adopted</button>
+                <button type="button" class="filter-tab" data-filter="removed" onclick="setArchiveFilter('removed')">Administrative Removals</button>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="archiveSearch" placeholder="Search by pet or adopter name..." oninput="handleSearchInput()" style="min-width: 220px; padding: 8px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.84rem; background: var(--bg-surface);">
+                <button type="button" class="btn btn-sm" id="btnSelectAllArchives" onclick="toggleSelectAllArchives()" style="white-space: nowrap; height: 38px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: middle;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="9 11 12 14 22 4"></polyline></svg>
+                    Select All
+                </button>
+                <button type="button" class="btn btn-sm" id="btnExportArchives" onclick="exportArchivesData()" style="white-space: nowrap; height: 38px;" title="Export archive records to CSV">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: middle;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Export Data
+                </button>
+                <button type="button" class="btn btn-sm btn-danger-solid" id="btnBatchDeleteArchives" onclick="confirmBatchDeleteArchives()" style="white-space: nowrap; height: 38px; display: none;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: middle;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span id="btnBatchDeleteText">Delete Selected</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Archives Catalog Grid -->
+        <div class="pets-catalog-grid" id="archivesGrid">
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px 16px;">
+                <div class="paw-loader-container" role="status" aria-live="polite">
+                    <div class="paw-step-loader" aria-hidden="true">
+                        <span class="paw-step-pad">
+                            <svg viewBox="0 0 24 24" width="22" height="22">
+                                <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                                <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                                <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                                <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <span class="paw-step-pad">
+                            <svg viewBox="0 0 24 24" width="22" height="22">
+                                <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                                <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                                <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                                <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <span class="paw-step-pad">
+                            <svg viewBox="0 0 24 24" width="22" height="22">
+                                <ellipse cx="4.6" cy="8.6" rx="1.85" ry="2.6" transform="rotate(-20 4.6 8.6)" fill="currentColor" />
+                                <ellipse cx="9.3" cy="5.2" rx="2.05" ry="3.0" transform="rotate(-6 9.3 5.2)" fill="currentColor" />
+                                <ellipse cx="14.7" cy="5.2" rx="2.05" ry="3.0" transform="rotate(6 14.7 5.2)" fill="currentColor" />
+                                <ellipse cx="19.4" cy="8.6" rx="1.85" ry="2.6" transform="rotate(20 19.4 8.6)" fill="currentColor" />
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M 12 9.6 C 7 9.6 4.8 12.6 5.5 16.8 C 6.2 20.2 8.8 21.8 12 21.8 C 15.2 21.8 17.8 20.2 18.5 16.8 C 19.2 12.6 17 9.6 12 9.6 Z M 8.8 14.4 C 9.3 13.3 10.5 13.3 11 14.4 C 10.6 14.7 10.2 14.3 9.9 13.9 C 9.6 14.3 9.2 14.7 8.8 14.4 Z M 13 14.4 C 13.5 13.3 14.7 13.3 15.2 14.4 C 14.8 14.7 14.4 14.3 14.1 13.9 C 13.8 14.3 13.4 14.7 13 14.4 Z M 10.2 17.2 C 10.8 19 13.2 19 13.8 17.2 C 13.1 18 10.9 18 10.2 17.2 Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="paw-loader-text">Loading archived companion records...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification Component -->
+    <div id="toastNotice" class="toast-notice"></div>
+
+    <script>
+        // Separation of Duties Verification
+        const currentRole = (localStorage.getItem('currentUserRole') || '').toLowerCase();
+        const currentUserName = localStorage.getItem('currentUserName') || 'Staff';
+
+        // Archives are reserved strictly for Shelter Staff
+        if (currentRole === 'admin') {
+            window.location.href = 'users.html';
+        } else if (currentRole === 'adopter') {
+            window.location.href = 'pets.html';
+        } else if (!currentRole) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userNameDisplay').textContent = currentUserName;
+        document.getElementById('avatarInitial').textContent = currentUserName.charAt(0).toUpperCase();
+
+        let allArchives = [];
+        let activeFilter = 'all';
+        let selectedArchiveIds = new Set();
+
+        function toggleCardSelection(archiveId) {
+            if (selectedArchiveIds.has(archiveId)) {
+                selectedArchiveIds.delete(archiveId);
+            } else {
+                selectedArchiveIds.add(archiveId);
+            }
+            updateBatchBar();
+        }
+
+        function clearArchiveSelection() {
+            selectedArchiveIds.clear();
+            document.querySelectorAll('.archive-check').forEach(cb => cb.checked = false);
+            updateBatchBar();
+        }
+
+        function toggleSelectAllArchives() {
+            const visibleCheckboxes = document.querySelectorAll('.archive-check');
+            if (visibleCheckboxes.length === 0) return;
+
+            const allChecked = Array.from(visibleCheckboxes).every(cb => cb.checked);
+            if (allChecked) {
+                visibleCheckboxes.forEach(cb => {
+                    cb.checked = false;
+                    const id = parseInt(cb.getAttribute('data-id'), 10);
+                    selectedArchiveIds.delete(id);
+                });
+            } else {
+                visibleCheckboxes.forEach(cb => {
+                    cb.checked = true;
+                    const id = parseInt(cb.getAttribute('data-id'), 10);
+                    selectedArchiveIds.add(id);
+                });
+            }
+            updateBatchBar();
+        }
+
+        function updateBatchBar() {
+            const selectAllBtn = document.getElementById('btnSelectAllArchives');
+            const batchDeleteBtn = document.getElementById('btnBatchDeleteArchives');
+            const batchDeleteText = document.getElementById('btnBatchDeleteText');
+            const count = selectedArchiveIds.size;
+
+            if (batchDeleteBtn && batchDeleteText) {
+                if (count > 0) {
+                    batchDeleteBtn.style.display = 'inline-flex';
+                    batchDeleteText.textContent = `Delete Selected (${count})`;
+                } else {
+                    batchDeleteBtn.style.display = 'none';
+                }
+            }
+
+            if (selectAllBtn) {
+                const visibleCheckboxes = document.querySelectorAll('.archive-check');
+                const allChecked = visibleCheckboxes.length > 0 && Array.from(visibleCheckboxes).every(cb => cb.checked);
+                selectAllBtn.innerHTML = allChecked ?
+                    `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: middle;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Deselect All` :
+                    `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: middle;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="9 11 12 14 22 4"></polyline></svg> Select All`;
+            }
+        }
+
+        // Export Archives Data as CSV
+        function exportArchivesData() {
+            const dataset = (selectedArchiveIds.size > 0)
+                ? allArchives.filter(a => selectedArchiveIds.has(a.archive_id))
+                : allArchives;
+
+            if (!dataset || dataset.length === 0) {
+                showToast('No archive records available to export.', 'warning');
+                return;
+            }
+
+            const headers = [
+                'Archive ID',
+                'Original Pet ID',
+                'Pet Name',
+                'Species',
+                'Breed',
+                'Age',
+                'Gender',
+                'Archive Reason',
+                'Health Status',
+                'Adopter Name',
+                'Adopter Email',
+                'Adopter Phone',
+                'Adoption Date',
+                'Archived At',
+                'Archived By'
+            ];
+
+            const rows = dataset.map(item => [
+                `#ARC-${item.archive_id}`,
+                item.original_pet_id ? `#PET-${item.original_pet_id}` : '',
+                item.pet_name || '',
+                item.species || '',
+                item.breed || '',
+                item.age || '',
+                item.gender || '',
+                item.archive_reason || '',
+                item.health_status || '',
+                item.adopter_name || '',
+                item.adopter_email || '',
+                item.adopter_contact || '',
+                item.adoption_date ? String(item.adoption_date).split('T')[0] : '',
+                item.archived_at ? String(item.archived_at).split('T')[0] : '',
+                item.archived_by || 'Staff'
+            ]);
+
+            function escapeCsvValue(val) {
+                const str = String(val ?? '').replace(/"/g, '""');
+                return `"${str}"`;
+            }
+
+            const csvContent = '\uFEFF' + [
+                headers.map(escapeCsvValue).join(','),
+                ...rows.map(r => r.map(escapeCsvValue).join(','))
+            ].join('\r\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const dateStr = new Date().toISOString().split('T')[0];
+            a.href = url;
+            a.download = `happy_paws_archives_${dateStr}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast(`Exported ${dataset.length} archive record(s) to CSV.`, 'success');
+        }
+
+        function showConfirmDialog({ title, message, confirmText = 'Confirm', cancelText = 'Cancel', type = 'warning' }) {
+            return new Promise((resolve) => {
+                let modal = document.getElementById('themeConfirmModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'themeConfirmModal';
+                    modal.className = 'confirm-modal-backdrop';
+                    modal.innerHTML = `
+                        <div class="confirm-modal-card">
+                            <div class="confirm-modal-icon-badge" id="confirmModalBadge">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            </div>
+                            <h3 class="confirm-modal-title" id="confirmModalTitle"></h3>
+                            <div class="confirm-modal-body" id="confirmModalBody"></div>
+                            <div class="confirm-modal-actions">
+                                <button type="button" class="btn btn-sm" id="btnConfirmCancel">Cancel</button>
+                                <button type="button" class="btn btn-sm btn-primary" id="btnConfirmOk">Confirm</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+
+                const titleEl = document.getElementById('confirmModalTitle');
+                const bodyEl = document.getElementById('confirmModalBody');
+                const okBtn = document.getElementById('btnConfirmOk');
+                const cancelBtn = document.getElementById('btnConfirmCancel');
+                const badge = document.getElementById('confirmModalBadge');
+
+                titleEl.textContent = title;
+                bodyEl.innerHTML = message;
+                okBtn.textContent = confirmText;
+                cancelBtn.textContent = cancelText;
+
+                if (type === 'danger') {
+                    badge.className = 'confirm-modal-icon-badge danger';
+                    okBtn.className = 'btn btn-sm btn-danger-solid';
+                } else {
+                    badge.className = 'confirm-modal-icon-badge warning';
+                    okBtn.className = 'btn btn-sm btn-primary';
+                }
+
+                modal.style.display = 'flex';
+
+                function cleanup(result) {
+                    modal.style.display = 'none';
+                    okBtn.removeEventListener('click', onOk);
+                    cancelBtn.removeEventListener('click', onCancel);
+                    modal.removeEventListener('click', onBackdrop);
+                    resolve(result);
+                }
+
+                function onOk() { cleanup(true); }
+                function onCancel() { cleanup(false); }
+                function onBackdrop(e) { if (e.target === modal) cleanup(false); }
+
+                okBtn.addEventListener('click', onOk);
+                cancelBtn.addEventListener('click', onCancel);
+                modal.addEventListener('click', onBackdrop);
+            });
+        }
+
+        function showToast(msg, type = 'success') {
+            let toast = document.getElementById('toastNotice');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toastNotice';
+                document.body.appendChild(toast);
+            }
+            let iconSvg = '';
+            if (type === 'error') {
+                iconSvg = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+            } else if (type === 'warning') {
+                iconSvg = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+            } else {
+                iconSvg = `<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+            }
+            toast.className = `toast-notice show toast-${type}`;
+            toast.innerHTML = `${iconSvg}<span>${escapeHtml(msg)}</span>`;
+            if (window._toastTimeout) clearTimeout(window._toastTimeout);
+            window._toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3800);
+        }
+
+        const DEFAULT_PET_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='360' viewBox='0 0 600 360' fill='%23F4EFEA'><rect width='600' height='360' fill='%23F4EFEA'/><circle cx='270' cy='155' r='18' fill='%23D5C7B8'/><circle cx='330' cy='155' r='18' fill='%23D5C7B8'/><circle cx='235' cy='190' r='15' fill='%23D5C7B8'/><circle cx='365' cy='190' r='15' fill='%23D5C7B8'/><path d='M300 195 C265 195 245 225 260 255 C270 275 330 275 340 255 C355 225 335 195 300 195 Z' fill='%23D5C7B8'/><text x='300' y='305' font-family='sans-serif' font-size='14' font-weight='600' fill='%239E8F80' text-anchor='middle'>No Photo Available</text></svg>";
+
+        function getPetImageUrl(p) {
+            if (p && (p.image_data || p.ImageData)) return p.image_data || p.ImageData;
+            if (p && (p.imageurl || p.ImageURL || p.photo_url || p.photoUrl)) return p.imageurl || p.ImageURL || p.photo_url || p.photoUrl;
+            return DEFAULT_PET_PLACEHOLDER;
+        }
+
+        async function fetchArchives() {
+            const grid = document.getElementById('archivesGrid');
+            try {
+                const res = await fetch('/api/archives', {
+                    headers: { 'X-User-Role': currentRole }
+                });
+                if (!res.ok) throw new Error('Failed to retrieve archives.');
+                allArchives = await res.json();
+                updateStats();
+                renderArchivesGrid();
+            } catch (err) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: var(--danger); padding: 40px;">Failed to load archives directory: ' + escapeHtml(err.message) + '</div>';
+            }
+        }
+
+        function updateStats() {
+            const total = allArchives.length;
+            const adopted = allArchives.filter(a => (a.archive_reason || '').toLowerCase().includes('adopt')).length;
+            const removed = total - adopted;
+
+            document.getElementById('countTotalArchives').textContent = total;
+            document.getElementById('countAdoptedArchives').textContent = adopted;
+            document.getElementById('countRemovedArchives').textContent = removed;
+        }
+
+        function setArchiveFilter(filter) {
+            activeFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(t => {
+                t.classList.toggle('active', t.getAttribute('data-filter') === filter);
+            });
+            renderArchivesGrid();
+        }
+
+        function handleSearchInput() {
+            renderArchivesGrid();
+        }
+
+        function renderArchivesGrid() {
+            const grid = document.getElementById('archivesGrid');
+            const searchKeyword = (document.getElementById('archiveSearch').value || '').trim().toLowerCase();
+
+            let filtered = allArchives.filter(item => {
+                const isAdopted = (item.archive_reason || '').toLowerCase().includes('adopt');
+                if (activeFilter === 'adopted' && !isAdopted) return false;
+                if (activeFilter === 'removed' && isAdopted) return false;
+
+                if (searchKeyword) {
+                    const petName = (item.pet_name || '').toLowerCase();
+                    const breed = (item.breed || '').toLowerCase();
+                    const adopter = (item.adopter_name || '').toLowerCase();
+                    const reason = (item.archive_reason || '').toLowerCase();
+                    return petName.includes(searchKeyword) || breed.includes(searchKeyword) || adopter.includes(searchKeyword) || reason.includes(searchKeyword);
+                }
+                return true;
+            });
+
+            grid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                grid.innerHTML = (typeof renderCozyEmptyState === 'function')
+                    ? renderCozyEmptyState({
+                        fullWidth: true,
+                        title: 'Everyone is tucked in and cozy.',
+                        desc: 'No archived companion records match your current filter.'
+                    })
+                    : '<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px;">No archived companion records match your current filter.</div>';
+                updateBatchBar();
+                return;
+            }
+
+            filtered.forEach((item, idx) => {
+                const archiveId = item.archive_id;
+                const petName = item.pet_name || 'Companion';
+                const species = item.species || 'Pet';
+                const breed = item.breed || 'Mixed';
+                const age = (item.age || 1) + ' yr old';
+                const gender = item.gender || 'Unknown';
+                const reason = item.archive_reason || 'Administrative Removal';
+                const adopterName = item.adopter_name || 'Unadopted / In Shelter';
+                const adopterEmail = item.adopter_email || '-';
+                const adopterContact = item.adopter_contact || '-';
+                const adoptionDate = item.adoption_date ? String(item.adoption_date).split('T')[0] : null;
+                const archivedAt = item.archived_at ? String(item.archived_at).split('T')[0] : 'Recently';
+                const imgUrl = getPetImageUrl(item);
+
+                const isAdopted = reason.toLowerCase().includes('adopt');
+                const reasonPillClass = isAdopted ? 'success' : 'warning';
+                const isChecked = selectedArchiveIds.has(archiveId);
+
+                const card = document.createElement('div');
+                card.className = 'pet-companion-card';
+                card.style.animationDelay = `${Math.min(idx * 30, 300)}ms`;
+                card.innerHTML = `
+                    <div class="pet-card-banner">
+                        <label class="archive-card-select-badge" onclick="event.stopPropagation();">
+                            <input type="checkbox" class="archive-check" data-id="${archiveId}" ${isChecked ? 'checked' : ''} onchange="toggleCardSelection(${archiveId})">
+                            <span>#ARC-${archiveId}</span>
+                        </label>
+                        <img src="${imgUrl}" alt="${escapeHtml(petName)}" class="pet-card-img" loading="lazy" onerror="this.src=DEFAULT_PET_PLACEHOLDER">
+                        <div class="pet-avatar-icon" title="Archived Record">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                                <rect x="1" y="3" width="22" height="5"></rect>
+                                <line x1="10" y1="12" x2="14" y2="12"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="pet-card-body">
+                        <div class="pet-card-title-row">
+                            <h3 class="pet-card-name">${escapeHtml(petName)}</h3>
+                            <span class="status-pill ${reasonPillClass}">${escapeHtml(reason)}</span>
+                        </div>
+                        <div class="pet-card-meta">${escapeHtml(species)} • ${escapeHtml(breed)} • ${age} • ${gender}</div>
+                        ${item.health_status ? `<div style="margin-top: 6px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.35;"><strong style="color: var(--text-main);">Medical:</strong> ${escapeHtml(item.health_status)}</div>` : ''}
+                        
+                        <div class="adopter-dossier-box">
+                            <div class="dossier-header">
+                                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                Adopter Information
+                            </div>
+                            <div class="dossier-name">${escapeHtml(adopterName)}</div>
+                            <div class="dossier-contact">
+                                <div>Email: ${escapeHtml(adopterEmail)}</div>
+                                <div>Phone: ${escapeHtml(adopterContact)}</div>
+                            </div>
+                            ${adoptionDate ? `<div class="dossier-date">Adopted on: ${adoptionDate}</div>` : ''}
+                        </div>
+
+                        <div class="archive-timestamp">
+                            Archived on ${archivedAt} by ${escapeHtml(item.archived_by || 'Staff')}
+                        </div>
+
+                        <div class="pet-card-footer" style="margin-top: 14px; display: grid; grid-template-columns: 1fr auto; gap: 8px;">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="restoreCompanion(${archiveId}, '${escapeQuotes(petName)}')">
+                                Restore
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDeleteSingleArchive(${archiveId}, '${escapeQuotes(petName)}')" title="Permanently Delete Archive Record">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            updateBatchBar();
+        }
+
+        async function confirmDeleteSingleArchive(archiveId, petName) {
+            const confirmed = await showConfirmDialog({
+                title: 'Delete Archive Record',
+                message: `Are you sure you want to permanently delete the archive record for <strong>${escapeHtml(petName)} (#ARC-${archiveId})</strong>?<br><br>This will permanently erase this record from the database and reclaim its ID so future records can use it without leaving unused ID gaps.`,
+                confirmText: 'Delete Permanently',
+                type: 'danger'
+            });
+            if (!confirmed) return;
+
+            try {
+                const res = await fetch(`/api/archives/${archiveId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-User-Role': currentRole
+                    }
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.ok && data.success) {
+                    showToast(data.message || `Archive record #${archiveId} permanently deleted.`, 'success');
+                    selectedArchiveIds.delete(archiveId);
+                    fetchArchives();
+                } else {
+                    const err = data.message || (res.status === 404 ? 'Archive record not found. Please restart your backend terminal.' : `Failed to delete record (HTTP ${res.status}).`);
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Network error while deleting archive: ' + err.message, 'error');
+            }
+        }
+
+        async function confirmBatchDeleteArchives() {
+            const count = selectedArchiveIds.size;
+            if (count === 0) return;
+
+            const confirmed = await showConfirmDialog({
+                title: 'Delete Selected Archives',
+                message: `Are you sure you want to permanently delete <strong>${count} selected archive record${count > 1 ? 's' : ''}</strong>?<br><br>All selected entries will be erased from the database and the sequence will be reset so deleted IDs are freed for new entries.`,
+                confirmText: `Delete ${count} Record${count > 1 ? 's' : ''}`,
+                type: 'danger'
+            });
+            if (!confirmed) return;
+
+            try {
+                const res = await fetch('/api/archives/bulk-delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-User-Role': currentRole
+                    },
+                    body: JSON.stringify({ archiveIds: Array.from(selectedArchiveIds) })
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.ok && data.success) {
+                    showToast(data.message || `${count} archive record(s) deleted.`, 'success');
+                    selectedArchiveIds.clear();
+                    updateBatchBar();
+                    fetchArchives();
+                } else {
+                    const err = data.message || `Failed to delete records (HTTP ${res.status}). Please restart your backend terminal.`;
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Network error while batch deleting: ' + err.message, 'error');
+            }
+        }
+
+        async function restoreCompanion(archiveId, petName) {
+            const confirmed = await showConfirmDialog({
+                title: 'Restore Companion',
+                message: `Restore <strong>${escapeHtml(petName)} (#ARC-${archiveId})</strong> back to the active available companions roster?<br><br>This will re-publish their profile in the catalog and remove this archive snapshot.`,
+                confirmText: 'Restore to Active Catalog',
+                type: 'warning'
+            });
+            if (!confirmed) return;
+
+            try {
+                const res = await fetch(`/api/archives/${archiveId}/restore`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-User-Role': currentRole
+                    }
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.ok && data.success) {
+                    showToast(data.message || `${petName} has been restored!`, 'success');
+                    selectedArchiveIds.delete(archiveId);
+                    fetchArchives();
+                } else {
+                    const err = data.message || `Failed to restore companion (HTTP ${res.status}).`;
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                showToast('Network error: ' + err.message, 'error');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function escapeQuotes(str) {
+            if (!str) return '';
+            return String(str).replace(/'/g, "\\'");
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchArchives);
+    </script>
+</body>
+</html>
