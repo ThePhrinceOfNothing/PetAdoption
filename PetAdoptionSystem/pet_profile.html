@@ -118,34 +118,48 @@
 
                     <!-- Details Column -->
                     <div class="profile-details-list">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                            <h2 id="passportTitle" style="margin: 0;"></h2>
+                        <div class="passport-header-wrap">
+                            <h2 id="passportTitle"></h2>
                             <span class="status-pill success" id="passportStatus">Available</span>
                         </div>
-                        <dl>
-                            <dt>Species</dt>
-                            <dd id="passportSpecies">-</dd>
 
-                            <dt>Breed</dt>
-                            <dd id="passportBreed">-</dd>
+                        <!-- Core Traits 4-Grid -->
+                        <div class="passport-specs-grid">
+                            <div class="spec-tile">
+                                <span class="spec-label">Species</span>
+                                <span class="spec-value" id="passportSpecies">-</span>
+                            </div>
+                            <div class="spec-tile">
+                                <span class="spec-label">Breed</span>
+                                <span class="spec-value" id="passportBreed">-</span>
+                            </div>
+                            <div class="spec-tile">
+                                <span class="spec-label">Age</span>
+                                <span class="spec-value" id="passportAge">-</span>
+                            </div>
+                            <div class="spec-tile">
+                                <span class="spec-label">Gender</span>
+                                <span class="spec-value" id="passportGender">-</span>
+                            </div>
+                        </div>
 
-                            <dt>Estimated Age</dt>
-                            <dd id="passportAge">-</dd>
+                        <!-- Narrative & Personality Details -->
+                        <div class="passport-narrative-group">
+                            <div class="narrative-item">
+                                <span class="narrative-label">Personality & Temperament</span>
+                                <span class="narrative-value" id="passportTemperament">-</span>
+                            </div>
+                            <div class="narrative-item">
+                                <span class="narrative-label">Behavior Notes</span>
+                                <span class="narrative-value" id="passportBehavior">-</span>
+                            </div>
+                            <div class="narrative-item">
+                                <span class="narrative-label">Date Rescued</span>
+                                <span class="narrative-value" id="passportRegistered">-</span>
+                            </div>
+                        </div>
 
-                            <dt>Gender</dt>
-                            <dd id="passportGender">-</dd>
-
-                            <dt>Date Rescued</dt>
-                            <dd id="passportRegistered">-</dd>
-
-                            <dt>Personality</dt>
-                            <dd id="passportTemperament">-</dd>
-
-                            <dt>Behavior Notes</dt>
-                            <dd id="passportBehavior">-</dd>
-                        </dl>
-
-                        <div style="margin-top: 24px;" id="applyContainer">
+                        <div style="margin-top: 20px;" id="applyContainer">
                             <a href="adopters.html" class="btn btn-primary" id="btnApplyPassport">Apply to Adopt</a>
                         </div>
                     </div>
@@ -171,26 +185,30 @@
                     </h3>
                     <span class="status-pill success" id="passportClinicalBadge">Verified</span>
                 </div>
-                <div class="health-grid-metrics">
-                    <div class="health-metric-box">
-                        <div class="health-metric-lbl">Medical Condition</div>
-                        <div class="health-metric-val" id="valMedicalCondition">Healthy / Cleared</div>
+                <div class="health-card-body">
+                    <div class="health-overview-row">
+                        <div class="health-metric-box condition-box">
+                            <div class="health-metric-lbl">Medical Condition & Clinical Notes</div>
+                            <div class="health-metric-val" id="valMedicalCondition">Healthy / Cleared</div>
+                        </div>
+                        <div class="health-metric-box medication-box">
+                            <div class="health-metric-lbl">Prescribed Medication</div>
+                            <div class="health-metric-val" id="valMedication">None</div>
+                        </div>
                     </div>
-                    <div class="health-metric-box">
-                        <div class="health-metric-lbl">Prescribed Medication</div>
-                        <div class="health-metric-val" id="valMedication">None</div>
-                    </div>
-                    <div class="health-metric-box">
-                        <div class="health-metric-lbl">Vaccination Date</div>
-                        <div class="health-metric-val" id="valVaccinationDate">Up-to-Date</div>
-                    </div>
-                    <div class="health-metric-box">
-                        <div class="health-metric-lbl">Last Veterinary Checkup</div>
-                        <div class="health-metric-val" id="valLastCheckup">Recent</div>
-                    </div>
-                    <div class="health-metric-box">
-                        <div class="health-metric-lbl">Next Scheduled Checkup</div>
-                        <div class="health-metric-val" id="valNextAppointment">To be scheduled</div>
+                    <div class="health-timeline-row">
+                        <div class="health-metric-box">
+                            <div class="health-metric-lbl">Vaccination Date</div>
+                            <div class="health-metric-val" id="valVaccinationDate">Up-to-Date</div>
+                        </div>
+                        <div class="health-metric-box">
+                            <div class="health-metric-lbl">Last Veterinary Checkup</div>
+                            <div class="health-metric-val" id="valLastCheckup">Recent</div>
+                        </div>
+                        <div class="health-metric-box">
+                            <div class="health-metric-lbl">Next Scheduled Checkup</div>
+                            <div class="health-metric-val" id="valNextAppointment">To be scheduled</div>
+                        </div>
                     </div>
                 </div>
             </div>
