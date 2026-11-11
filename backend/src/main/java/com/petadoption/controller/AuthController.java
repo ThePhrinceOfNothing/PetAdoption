@@ -16,6 +16,7 @@ import java.security.spec.KeySpec;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api")
@@ -238,6 +239,10 @@ public class AuthController {
         } catch (Exception ignored) {}
     }
 
+    // Validation Regex Patterns
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^[+0-9()\\s-]{7,25}$");
+
     // Instant Secure Login (< 10ms response time)
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> credentials) {
@@ -248,6 +253,20 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of(
                 "success", false,
                 "message", "Please enter both email and password."
+            ));
+        }
+
+        if (email.length() > 100 || !EMAIL_PATTERN.matcher(email).matches()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Please enter a valid email address."
+            ));
+        }
+
+        if (password.length() > 128) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Password exceeds maximum allowable length."
             ));
         }
 
@@ -353,10 +372,52 @@ public class AuthController {
             ));
         }
 
+        if (firstName.length() > 50) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "First Name cannot exceed 50 characters."
+            ));
+        }
+
+        if (lastName.length() > 50) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Last Name cannot exceed 50 characters."
+            ));
+        }
+
+        if (email.length() > 100 || !EMAIL_PATTERN.matcher(email).matches()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Please provide a valid email address (e.g. adopter@happypaws.com)."
+            ));
+        }
+
         if (password.length() < 8) {
             return ResponseEntity.badRequest().body(Map.of(
                 "success", false,
                 "message", "Password must be at least 8 characters long."
+            ));
+        }
+
+        if (password.length() > 128) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Password cannot exceed 128 characters."
+            ));
+        }
+
+        if (contactNo.length() > 25 || !PHONE_PATTERN.matcher(contactNo).matches()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Please provide a valid contact number (7 to 25 digits, e.g. 09123456789 or +63 912 345 6789)."
+            ));
+        }
+
+        if (address.length() > 255) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Address cannot exceed 255 characters."
             ));
         }
 

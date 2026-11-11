@@ -66,7 +66,7 @@
                 <div class="form-grid">
                     <div class="field">
                         <label for="pet_name">Pet Name</label>
-                        <input type="text" id="pet_name" placeholder="e.g. Bella" required>
+                        <input type="text" id="pet_name" placeholder="e.g. Bella" maxlength="100" required>
                     </div>
 
                     <div class="field">
@@ -82,12 +82,12 @@
 
                     <div class="field">
                         <label for="breed">Breed</label>
-                        <input type="text" id="breed" placeholder="e.g. Golden Retriever Mix" required>
+                        <input type="text" id="breed" placeholder="e.g. Golden Retriever Mix" maxlength="100" required>
                     </div>
 
                     <div class="field">
                         <label for="age">Estimated Age (Years)</label>
-                        <input type="number" id="age" min="0" placeholder="e.g. 2" required>
+                        <input type="number" id="age" min="0" max="35" placeholder="e.g. 2" required>
                     </div>
 
                     <div class="field">
@@ -126,12 +126,12 @@
 
                     <div class="field span-2" id="allergyDetailsWrapper" style="display: none;">
                         <label for="allergy_details" id="allergyDetailsLabel">Allergy Details & Dietary Restrictions</label>
-                        <input type="text" id="allergy_details" placeholder="e.g. Chicken protein allergy, grain-free diet required, flea bite dermatitis">
+                        <input type="text" id="allergy_details" placeholder="e.g. Chicken protein allergy, grain-free diet required, flea bite dermatitis" maxlength="200">
                     </div>
 
                     <div class="field">
                         <label for="medication">Prescribed Medication</label>
-                        <input type="text" id="medication" placeholder="e.g. None, Monthly Dewormer" required>
+                        <input type="text" id="medication" placeholder="e.g. None, Monthly Dewormer" maxlength="150" required>
                     </div>
 
                     <div class="field">
@@ -151,7 +151,7 @@
 
                     <div class="field span-2">
                         <label for="behavior">Behavior Notes</label>
-                        <input type="text" id="behavior" placeholder="e.g. Friendly with kids, house-trained, energetic on walks" required>
+                        <input type="text" id="behavior" placeholder="e.g. Friendly with kids, house-trained, energetic on walks" maxlength="255" required>
                     </div>
 
                     <div class="field span-2">
@@ -1081,20 +1081,57 @@
             if (form) {
                 form.addEventListener('submit', async function (e) {
                     e.preventDefault();
+
+                    const petName = document.getElementById('pet_name').value.trim();
+                    const breed = document.getElementById('breed').value.trim();
+                    const ageVal = document.getElementById('age').value.trim();
+                    const age = parseInt(ageVal, 10);
+                    const medication = document.getElementById('medication').value.trim();
+                    const behavior = document.getElementById('behavior').value.trim();
+
+                    if (!petName) {
+                        showToast('Please enter a companion name.', 'warning');
+                        return;
+                    }
+                    if (petName.length > 100) {
+                        showToast('Companion name cannot exceed 100 characters.', 'warning');
+                        return;
+                    }
+                    if (!breed) {
+                        showToast('Please enter the breed or mix description.', 'warning');
+                        return;
+                    }
+                    if (breed.length > 100) {
+                        showToast('Breed description cannot exceed 100 characters.', 'warning');
+                        return;
+                    }
+                    if (isNaN(age) || age < 0 || age > 35) {
+                        showToast('Please enter a realistic companion age between 0 and 35 years.', 'warning');
+                        return;
+                    }
+                    if (medication.length > 150) {
+                        showToast('Medication notes cannot exceed 150 characters.', 'warning');
+                        return;
+                    }
+                    if (behavior.length > 255) {
+                        showToast('Behavior notes cannot exceed 255 characters.', 'warning');
+                        return;
+                    }
+
                     const payload = {
-                        pet_name: document.getElementById('pet_name').value.trim(),
+                        pet_name: petName,
                         species: document.getElementById('species').value,
-                        breed: document.getElementById('breed').value.trim(),
-                        age: parseInt(document.getElementById('age').value, 10) || 1,
+                        breed: breed,
+                        age: age,
                         gender: document.getElementById('gender').value,
                         personality: document.getElementById('personality').value,
                         date_registered: document.getElementById('date_registered').value || new Date().toISOString().split('T')[0],
                         medical_condition: getResolvedMedicalCondition(),
-                        medication: document.getElementById('medication').value.trim() || 'None',
+                        medication: medication || 'None',
                         vaccination_date: document.getElementById('vaccination_date').value || null,
                         last_checkup: document.getElementById('last_checkup').value || null,
                         next_appointment: document.getElementById('next_appointment').value || null,
-                        behavior: document.getElementById('behavior').value.trim() || 'Friendly companion',
+                        behavior: behavior || 'Friendly companion',
                         image_data: selectedPetImageData || ''
                     };
 

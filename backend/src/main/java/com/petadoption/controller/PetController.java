@@ -18,6 +18,63 @@ public class PetController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    // Defensive Input Validation Helpers
+    private static String validateAndClampString(Object val, String fieldName, int minLen, int maxLen, boolean required, String defaultVal) {
+        if (val == null) {
+            if (required) {
+                throw new IllegalArgumentException(fieldName + " is required.");
+            }
+            return defaultVal;
+        }
+        String s = val.toString().trim();
+        if (s.isEmpty()) {
+            if (required) {
+                throw new IllegalArgumentException(fieldName + " cannot be blank.");
+            }
+            return defaultVal;
+        }
+        if (s.length() < minLen) {
+            throw new IllegalArgumentException(fieldName + " must be at least " + minLen + " characters.");
+        }
+        if (s.length() > maxLen) {
+            return s.substring(0, maxLen);
+        }
+        return s;
+    }
+
+    private static int validateAndClampAge(Object val) {
+        if (val == null) return 1;
+        String raw = val.toString().trim().replaceAll("[^0-9]", "");
+        if (raw.isEmpty()) return 1;
+        try {
+            int age = Integer.parseInt(raw);
+            if (age < 0) return 0;
+            if (age > 35) return 35;
+            return age;
+        } catch (NumberFormatException e) {
+            return 1;
+        }
+    }
+
+    private static java.sql.Date validateAndParseDate(Object val, String fieldName) {
+        if (val == null) return null;
+        String s = val.toString().trim();
+        if (s.isEmpty()) return null;
+        try {
+            java.sql.Date d = java.sql.Date.valueOf(s);
+            long millis = d.getTime();
+            long year1990 = java.sql.Date.valueOf("1990-01-01").getTime();
+            long year2100 = java.sql.Date.valueOf("2100-01-01").getTime();
+            if (millis < year1990 || millis > year2100) {
+                throw new IllegalArgumentException(fieldName + " date is outside the valid range (1990 - 2100).");
+            }
+            return d;
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage() != null && e.getMessage().contains("outside the valid range")) throw e;
+            throw new IllegalArgumentException(fieldName + " must be in valid YYYY-MM-DD date format.");
+        }
+    }
+
     @PostConstruct
     public void initPetImagesTable() {
         new Thread(() -> {
@@ -138,6 +195,13 @@ public class PetController {
             ));
         }
 
+        if (payload == null || payload.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Update payload cannot be empty."
+            ));
+        }
+
         try {
             Integer exists = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM Pets WHERE PetID = ?;", Integer.class, petId);
             if (exists == null || exists == 0) {
@@ -147,42 +211,23 @@ public class PetController {
                 ));
             }
 
-            String petName = (String) payload.get("pet_name");
-            String species = (String) payload.get("species");
-            String breed = (String) payload.get("breed");
-            int age = Integer.parseInt(payload.getOrDefault("age", "1").toString().replaceAll("[^0-9]", ""));
-            String gender = (String) payload.getOrDefault("gender", "Male");
-            String adoptionStatus = (String) payload.getOrDefault("adoption_status", "Available");
-            String personality = (String) payload.getOrDefault("personality", "Calm & Gentle (Cozy Couch Companion)");
-            String behavior = (String) payload.getOrDefault("behavior", "Friendly companion");
+            String petName = validateAndClampString(payload.get("pet_name"), "Pet Name", 1, 100, true, "Unnamed Companion");
+            String species = validateAndClampString(payload.get("species"), "Species", 1, 50, true, "Dog");
+            String breed = validateAndClampString(payload.get("breed"), "Breed", 1, 100, true, "Mixed Breed");
+            int age = validateAndClampAge(payload.get("age"));
+            String gender = validateAndClampString(payload.get("gender"), "Gender", 1, 20, false, "Male");
+            String adoptionStatus = validateAndClampString(payload.get("adoption_status"), "Adoption Status", 1, 50, false, "Available");
+            String personality = validateAndClampString(payload.get("personality"), "Personality", 0, 255, false, "Calm & Gentle (Cozy Couch Companion)");
+            String behavior = validateAndClampString(payload.get("behavior"), "Behavior Notes", 0, 255, false, "Friendly companion");
             String imageData = (String) payload.get("image_data");
 
-            String dateRegisteredStr = (String) payload.get("date_registered");
-            java.sql.Date dateRegistered = null;
-            if (dateRegisteredStr != null && !dateRegisteredStr.trim().isEmpty()) {
-                try { dateRegistered = java.sql.Date.valueOf(dateRegisteredStr.trim()); } catch (Exception ignored) {}
-            }
+            java.sql.Date dateRegistered = validateAndParseDate(payload.get("date_registered"), "Date Registered");
+            java.sql.Date vaccinationDate = validateAndParseDate(payload.get("vaccination_date"), "Vaccination Date");
+            java.sql.Date lastCheckup = validateAndParseDate(payload.get("last_checkup"), "Last Checkup Date");
+            java.sql.Date nextAppointment = validateAndParseDate(payload.get("next_appointment"), "Next Appointment Date");
 
-            String vaccinationDateStr = (String) payload.get("vaccination_date");
-            java.sql.Date vaccinationDate = null;
-            if (vaccinationDateStr != null && !vaccinationDateStr.trim().isEmpty()) {
-                try { vaccinationDate = java.sql.Date.valueOf(vaccinationDateStr.trim()); } catch (Exception ignored) {}
-            }
-
-            String lastCheckupStr = (String) payload.get("last_checkup");
-            java.sql.Date lastCheckup = null;
-            if (lastCheckupStr != null && !lastCheckupStr.trim().isEmpty()) {
-                try { lastCheckup = java.sql.Date.valueOf(lastCheckupStr.trim()); } catch (Exception ignored) {}
-            }
-
-            String nextAppointmentStr = (String) payload.get("next_appointment");
-            java.sql.Date nextAppointment = null;
-            if (nextAppointmentStr != null && !nextAppointmentStr.trim().isEmpty()) {
-                try { nextAppointment = java.sql.Date.valueOf(nextAppointmentStr.trim()); } catch (Exception ignored) {}
-            }
-
-            String medicalCondition = (String) payload.getOrDefault("medical_condition", "Healthy / Cleared for Adoption");
-            String medication = (String) payload.getOrDefault("medication", "None");
+            String medicalCondition = validateAndClampString(payload.get("medical_condition"), "Medical Condition", 0, 255, false, "Healthy / Cleared for Adoption");
+            String medication = validateAndClampString(payload.get("medication"), "Medication", 0, 255, false, "None");
 
             // 1. Update Pets table
             if (dateRegistered != null) {
@@ -255,6 +300,11 @@ public class PetController {
                 "success", true,
                 "message", "Companion " + petName + " (#PET-" + petId + ") profile has been successfully updated."
             ));
+        } catch (IllegalArgumentException iae) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", iae.getMessage()
+            ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                 "success", false,
@@ -278,87 +328,88 @@ public class PetController {
             ));
         }
 
-        String petName = (String) payload.get("pet_name");
-        String species = (String) payload.get("species");
-        String breed = (String) payload.get("breed");
-        int age = Integer.parseInt(payload.getOrDefault("age", "1").toString().replaceAll("[^0-9]", ""));
-        String gender = (String) payload.getOrDefault("gender", "Male");
-        String personality = (String) payload.getOrDefault("personality", "Calm & Gentle (Cozy Couch Companion)");
-        String behavior = (String) payload.getOrDefault("behavior", "Friendly companion");
-        String imageData = (String) payload.get("image_data");
-
-        // Parse HTML5 native date inputs
-        String dateRegisteredStr = (String) payload.get("date_registered");
-        java.sql.Date dateRegistered = null;
-        if (dateRegisteredStr != null && !dateRegisteredStr.trim().isEmpty()) {
-            try { dateRegistered = java.sql.Date.valueOf(dateRegisteredStr.trim()); } catch (Exception ignored) {}
-        }
-        if (dateRegistered == null) {
-            dateRegistered = new java.sql.Date(System.currentTimeMillis());
+        if (payload == null || payload.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Pet intake payload cannot be empty."
+            ));
         }
 
-        String vaccinationDateStr = (String) payload.get("vaccination_date");
-        java.sql.Date vaccinationDate = null;
-        if (vaccinationDateStr != null && !vaccinationDateStr.trim().isEmpty()) {
-            try { vaccinationDate = java.sql.Date.valueOf(vaccinationDateStr.trim()); } catch (Exception ignored) {}
-        }
+        try {
+            String petName = validateAndClampString(payload.get("pet_name"), "Pet Name", 1, 100, true, "Unnamed Companion");
+            String species = validateAndClampString(payload.get("species"), "Species", 1, 50, true, "Dog");
+            String breed = validateAndClampString(payload.get("breed"), "Breed", 1, 100, true, "Mixed Breed");
+            int age = validateAndClampAge(payload.get("age"));
+            String gender = validateAndClampString(payload.get("gender"), "Gender", 1, 20, false, "Male");
+            String personality = validateAndClampString(payload.get("personality"), "Personality", 0, 255, false, "Calm & Gentle (Cozy Couch Companion)");
+            String behavior = validateAndClampString(payload.get("behavior"), "Behavior Notes", 0, 255, false, "Friendly companion");
+            String imageData = (String) payload.get("image_data");
 
-        String lastCheckupStr = (String) payload.get("last_checkup");
-        java.sql.Date lastCheckup = null;
-        if (lastCheckupStr != null && !lastCheckupStr.trim().isEmpty()) {
-            try { lastCheckup = java.sql.Date.valueOf(lastCheckupStr.trim()); } catch (Exception ignored) {}
-        }
-
-        String nextAppointmentStr = (String) payload.get("next_appointment");
-        java.sql.Date nextAppointment = null;
-        if (nextAppointmentStr != null && !nextAppointmentStr.trim().isEmpty()) {
-            try { nextAppointment = java.sql.Date.valueOf(nextAppointmentStr.trim()); } catch (Exception ignored) {}
-        }
-
-        String medicalCondition = (String) payload.getOrDefault("medical_condition", "Healthy / Routine Intake");
-        String medication = (String) payload.getOrDefault("medication", "None");
-
-        // 1. Insert into Pets
-        String insertPetSql = """
-            INSERT INTO Pets (PetName, Species, Breed, Age, Gender, DateRegistered, AdoptionStatus)
-            VALUES (?, ?, ?, ?, ?, ?, 'Available')
-            RETURNING PetID;
-        """;
-        Integer newPetId = jdbcTemplate.queryForObject(insertPetSql, Integer.class, petName, species, breed, age, gender, dateRegistered);
-
-        // 2. Insert into Pet_Profiles (with QR code)
-        String qrCodeId = "HP-PET-" + newPetId;
-        String insertProfileSql = """
-            INSERT INTO Pet_Profiles (PetID, Personality, Behavior, QRCode)
-            VALUES (?, ?, ?, ?);
-        """;
-        jdbcTemplate.update(insertProfileSql, newPetId, personality, behavior, qrCodeId);
-
-        // 3. Insert into Pet_Health_Records
-        String insertHealthSql = """
-            INSERT INTO Pet_Health_Records (PetID, VaccinationDate, MedicalCondition, Medication, LastCheckup, NextAppointment)
-            VALUES (?, ?, ?, ?, ?, ?);
-        """;
-        jdbcTemplate.update(insertHealthSql, newPetId, vaccinationDate, medicalCondition, medication, lastCheckup, nextAppointment);
-
-        // 4. Save photo into Pet_Images if provided
-        if (imageData != null && !imageData.trim().isEmpty()) {
-            try {
-                String insertImgSql = """
-                    INSERT INTO Pet_Images (PetID, ImageData, FileName, MimeType)
-                    VALUES (?, ?, ?, 'image/jpeg');
-                """;
-                jdbcTemplate.update(insertImgSql, newPetId, imageData, petName + "_photo.jpg");
-            } catch (Exception e) {
-                System.err.println("Notice inserting into Pet_Images: " + e.getMessage());
+            // Parse HTML5 native date inputs safely
+            java.sql.Date dateRegistered = validateAndParseDate(payload.get("date_registered"), "Date Registered");
+            if (dateRegistered == null) {
+                dateRegistered = new java.sql.Date(System.currentTimeMillis());
             }
-        }
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("success", true);
-        result.put("petId", newPetId);
-        result.put("message", "Pet registered into Happy Paws roster with health records and QR code generated.");
-        return ResponseEntity.ok(result);
+            java.sql.Date vaccinationDate = validateAndParseDate(payload.get("vaccination_date"), "Vaccination Date");
+            java.sql.Date lastCheckup = validateAndParseDate(payload.get("last_checkup"), "Last Checkup Date");
+            java.sql.Date nextAppointment = validateAndParseDate(payload.get("next_appointment"), "Next Appointment Date");
+
+            String medicalCondition = validateAndClampString(payload.get("medical_condition"), "Medical Condition", 0, 255, false, "Healthy / Routine Intake");
+            String medication = validateAndClampString(payload.get("medication"), "Medication", 0, 255, false, "None");
+
+            // 1. Insert into Pets
+            String insertPetSql = """
+                INSERT INTO Pets (PetName, Species, Breed, Age, Gender, DateRegistered, AdoptionStatus)
+                VALUES (?, ?, ?, ?, ?, ?, 'Available')
+                RETURNING PetID;
+            """;
+            Integer newPetId = jdbcTemplate.queryForObject(insertPetSql, Integer.class, petName, species, breed, age, gender, dateRegistered);
+
+            // 2. Insert into Pet_Profiles (with QR code)
+            String qrCodeId = "HP-PET-" + newPetId;
+            String insertProfileSql = """
+                INSERT INTO Pet_Profiles (PetID, Personality, Behavior, QRCode)
+                VALUES (?, ?, ?, ?);
+            """;
+            jdbcTemplate.update(insertProfileSql, newPetId, personality, behavior, qrCodeId);
+
+            // 3. Insert into Pet_Health_Records
+            String insertHealthSql = """
+                INSERT INTO Pet_Health_Records (PetID, VaccinationDate, MedicalCondition, Medication, LastCheckup, NextAppointment)
+                VALUES (?, ?, ?, ?, ?, ?);
+            """;
+            jdbcTemplate.update(insertHealthSql, newPetId, vaccinationDate, medicalCondition, medication, lastCheckup, nextAppointment);
+
+            // 4. Save photo into Pet_Images if provided
+            if (imageData != null && !imageData.trim().isEmpty()) {
+                try {
+                    String insertImgSql = """
+                        INSERT INTO Pet_Images (PetID, ImageData, FileName, MimeType)
+                        VALUES (?, ?, ?, 'image/jpeg');
+                    """;
+                    jdbcTemplate.update(insertImgSql, newPetId, imageData, petName + "_photo.jpg");
+                } catch (Exception e) {
+                    System.err.println("Notice inserting into Pet_Images: " + e.getMessage());
+                }
+            }
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("petId", newPetId);
+            result.put("message", "Pet " + petName + " registered into Happy Paws roster with health records and QR code generated.");
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException iae) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", iae.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", "Failed to register pet: " + e.getMessage()
+            ));
+        }
     }
 
     // Direct Image Upload for any pet
@@ -560,84 +611,131 @@ public class PetController {
     // Option B: Adopter submits application - creates or links Adopters profile with UserID
     @PostMapping("/applications")
     public ResponseEntity<Map<String, Object>> submitApplication(@RequestBody Map<String, Object> payload) {
-        int petId = Integer.parseInt(payload.get("petId").toString());
-        String userEmail = ((String) payload.getOrDefault("email", "")).trim().toLowerCase();
-        String environment = (String) payload.getOrDefault("environment", "Apartment / Quiet Living Space");
-        String notes = (String) payload.getOrDefault("notes", "");
-        if (notes.isEmpty()) {
-            notes = environment;
+        if (payload == null || payload.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Application payload cannot be empty."
+            ));
         }
 
-        // Find associated user account in Users table
-        Integer userId = null;
         try {
-            List<Map<String, Object>> users = jdbcTemplate.queryForList(
-                "SELECT UserID FROM Users WHERE LOWER(Email) = ? LIMIT 1;",
-                userEmail
-            );
-            if (!users.isEmpty()) {
-                userId = ((Number) users.get(0).get("userid")).intValue();
+            if (payload.get("petId") == null) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Please select a valid companion to adopt."
+                ));
             }
-        } catch (Exception ignored) {}
 
-        // Find or create Adopters profile linked by UserID
-        Integer adopterId = null;
-        if (userId != null) {
+            int petId;
             try {
-                List<Map<String, Object>> adopters = jdbcTemplate.queryForList(
-                    "SELECT AdopterID FROM Adopters WHERE UserID = ? LIMIT 1;",
-                    userId
+                petId = Integer.parseInt(payload.get("petId").toString().replaceAll("[^0-9]", ""));
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Invalid companion ID provided."
+                ));
+            }
+
+            Integer petExists = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM Pets WHERE PetID = ?;", Integer.class, petId);
+            if (petExists == null || petExists == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "success", false,
+                    "message", "Companion #" + petId + " does not exist in shelter records."
+                ));
+            }
+
+            String userEmail = ((String) payload.getOrDefault("email", "")).trim().toLowerCase();
+            if (userEmail.isEmpty() || !userEmail.contains("@") || userEmail.length() > 100) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "A valid applicant email address is required."
+                ));
+            }
+
+            String environment = validateAndClampString(payload.get("environment"), "Living Environment", 1, 200, false, "Apartment / Quiet Living Space");
+            String notes = validateAndClampString(payload.get("notes"), "Household Notes", 0, 500, false, environment);
+
+            // Find associated user account in Users table
+            Integer userId = null;
+            try {
+                List<Map<String, Object>> users = jdbcTemplate.queryForList(
+                    "SELECT UserID FROM Users WHERE LOWER(Email) = ? LIMIT 1;",
+                    userEmail
                 );
-                if (!adopters.isEmpty()) {
-                    adopterId = ((Number) adopters.get(0).get("adopterid")).intValue();
+                if (!users.isEmpty()) {
+                    userId = ((Number) users.get(0).get("userid")).intValue();
                 }
             } catch (Exception ignored) {}
-        }
 
-        if (adopterId == null && userId != null) {
-            try {
-                List<Map<String, Object>> newRows = jdbcTemplate.queryForList("""
-                    INSERT INTO Adopters (UserID, Status)
-                    VALUES (?, 'Active')
-                    RETURNING AdopterID;
-                """, userId);
-                if (!newRows.isEmpty()) {
-                    adopterId = ((Number) newRows.get(0).get("adopterid")).intValue();
+            // Find or create Adopters profile linked by UserID
+            Integer adopterId = null;
+            if (userId != null) {
+                try {
+                    List<Map<String, Object>> adopters = jdbcTemplate.queryForList(
+                        "SELECT AdopterID FROM Adopters WHERE UserID = ? LIMIT 1;",
+                        userId
+                    );
+                    if (!adopters.isEmpty()) {
+                        adopterId = ((Number) adopters.get(0).get("adopterid")).intValue();
+                    }
+                } catch (Exception ignored) {}
+            }
+
+            if (adopterId == null && userId != null) {
+                try {
+                    List<Map<String, Object>> newRows = jdbcTemplate.queryForList("""
+                        INSERT INTO Adopters (UserID, Status)
+                        VALUES (?, 'Active')
+                        RETURNING AdopterID;
+                    """, userId);
+                    if (!newRows.isEmpty()) {
+                        adopterId = ((Number) newRows.get(0).get("adopterid")).intValue();
+                    }
+                } catch (Exception ex) {
+                    System.out.println("Adopter profile creation fallback: " + ex.getMessage());
                 }
-            } catch (Exception ex) {
-                System.out.println("Adopter profile creation fallback: " + ex.getMessage());
             }
-        }
 
-        // Insert into Adoption_Applications
-        Integer appId = null;
-        try {
-            List<Map<String, Object>> appRows = jdbcTemplate.queryForList("""
-                INSERT INTO Adoption_Applications (AdopterID, PetID, Status, ApplicationDate, LivingEnvironment, Notes)
-                VALUES (?, ?, 'Pending', CURRENT_DATE, ?, ?)
-                RETURNING ApplicationID;
-            """, adopterId, petId, environment, notes);
-            if (!appRows.isEmpty()) {
-                appId = ((Number) appRows.get(0).get("applicationid")).intValue();
-            }
-        } catch (Exception ex) {
+            // Insert into Adoption_Applications
+            Integer appId = null;
             try {
                 List<Map<String, Object>> appRows = jdbcTemplate.queryForList("""
-                    INSERT INTO Adoption_Applications (AdopterID, PetID, Status, ApplicationDate)
-                    VALUES (?, ?, 'Pending', CURRENT_DATE)
+                    INSERT INTO Adoption_Applications (AdopterID, PetID, Status, ApplicationDate, LivingEnvironment, Notes)
+                    VALUES (?, ?, 'Pending', CURRENT_DATE, ?, ?)
                     RETURNING ApplicationID;
-                """, adopterId, petId);
+                """, adopterId, petId, environment, notes);
                 if (!appRows.isEmpty()) {
                     appId = ((Number) appRows.get(0).get("applicationid")).intValue();
                 }
-            } catch (Exception ignored) {}
-        }
+            } catch (Exception ex) {
+                try {
+                    List<Map<String, Object>> appRows = jdbcTemplate.queryForList("""
+                        INSERT INTO Adoption_Applications (AdopterID, PetID, Status, ApplicationDate)
+                        VALUES (?, ?, 'Pending', CURRENT_DATE)
+                        RETURNING ApplicationID;
+                    """, adopterId, petId);
+                    if (!appRows.isEmpty()) {
+                        appId = ((Number) appRows.get(0).get("applicationid")).intValue();
+                    }
+                } catch (Exception ignored) {}
+            }
 
-        return ResponseEntity.ok(Map.of(
-            "success", true,
-            "applicationId", appId != null ? appId : 1,
-            "message", "Adoption application submitted for review by shelter staff."
-        ));
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "applicationId", appId != null ? appId : 1,
+                "message", "Adoption application submitted for review by shelter staff."
+            ));
+        } catch (IllegalArgumentException iae) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", iae.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", "Failed to submit adoption application: " + e.getMessage()
+            ));
+        }
     }
 
     // Shelter Operations Duty: Approve or Reject Application (Shelter Staff only)

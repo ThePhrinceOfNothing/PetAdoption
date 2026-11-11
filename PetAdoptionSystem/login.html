@@ -340,12 +340,12 @@
                 <form id="formLogin" class="auth-fields-panel active">
                     <div class="field" style="margin-bottom: 14px;">
                         <label for="loginEmail">Email Address</label>
-                        <input type="email" id="loginEmail" placeholder="e.g. adopter@happypaws.com" required autocomplete="email">
+                        <input type="email" id="loginEmail" placeholder="e.g. adopter@happypaws.com" maxlength="100" required autocomplete="email">
                     </div>
 
                     <div class="field" style="margin-bottom: 20px;">
                         <label for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password">
+                        <input type="password" id="loginPassword" placeholder="Enter your password" maxlength="128" required autocomplete="current-password">
                     </div>
                     <button type="submit" style="display: none;"></button>
                 </form>
@@ -355,32 +355,32 @@
                     <div class="field-row-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
                         <div class="field">
                             <label for="regFirstName">First Name</label>
-                            <input type="text" id="regFirstName" placeholder="e.g. Maria" required autocomplete="given-name">
+                            <input type="text" id="regFirstName" placeholder="e.g. Maria" maxlength="50" required autocomplete="given-name">
                         </div>
                         <div class="field">
                             <label for="regLastName">Last Name</label>
-                            <input type="text" id="regLastName" placeholder="e.g. Santos" required autocomplete="family-name">
+                            <input type="text" id="regLastName" placeholder="e.g. Santos" maxlength="50" required autocomplete="family-name">
                         </div>
                     </div>
 
                     <div class="field" style="margin-bottom: 12px;">
                         <label for="regContactNo">Contact Number</label>
-                        <input type="tel" id="regContactNo" placeholder="e.g. 09171234567" required autocomplete="tel">
+                        <input type="tel" id="regContactNo" placeholder="e.g. 09171234567" maxlength="25" pattern="[+0-9\s-]{7,25}" required autocomplete="tel">
                     </div>
 
                     <div class="field" style="margin-bottom: 12px;">
                         <label for="regAddress">Residential Address</label>
-                        <input type="text" id="regAddress" placeholder="e.g. Quezon City, Metro Manila" required autocomplete="street-address">
+                        <input type="text" id="regAddress" placeholder="e.g. Quezon City, Metro Manila" maxlength="200" required autocomplete="street-address">
                     </div>
 
                     <div class="field" style="margin-bottom: 12px;">
                         <label for="regEmail">Email Address</label>
-                        <input type="email" id="regEmail" placeholder="e.g. maria.santos@happypaws.com" required autocomplete="email">
+                        <input type="email" id="regEmail" placeholder="e.g. maria.santos@happypaws.com" maxlength="100" required autocomplete="email">
                     </div>
 
                     <div class="field" style="margin-bottom: 20px;">
                         <label for="regPassword">Create Password</label>
-                        <input type="password" id="regPassword" placeholder="At least 8 characters" minlength="8" required autocomplete="new-password">
+                        <input type="password" id="regPassword" placeholder="At least 8 characters" minlength="8" maxlength="128" required autocomplete="new-password">
                     </div>
                     <button type="submit" style="display: none;"></button>
                 </form>
@@ -544,11 +544,29 @@
             authFeedback.classList.add('auth-feedback-animate');
         }
 
+        const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const PHONE_REGEX = /^[+0-9\s-]{7,25}$/;
+
         // ==================== AUTHENTICATION ====================
         formLogin.addEventListener('submit', async function (e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
+
+            if (!email || !password) {
+                showAuthFeedback('Please fill in both email and password.', false);
+                return;
+            }
+
+            if (!EMAIL_REGEX.test(email)) {
+                showAuthFeedback('Please enter a valid email address (e.g. adopter@happypaws.com).', false);
+                return;
+            }
+
+            if (email.length > 100) {
+                showAuthFeedback('Email address cannot exceed 100 characters.', false);
+                return;
+            }
 
             btnSubmitAuth.disabled = true;
             btnSubmitLabel.textContent = 'Signing in...';
@@ -602,6 +620,41 @@
             const address = document.getElementById('regAddress').value.trim();
             const email = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPassword').value.trim();
+
+            if (!firstName || !lastName || !contactNo || !address || !email || !password) {
+                showAuthFeedback('Please complete all registration fields.', false);
+                return;
+            }
+
+            if (firstName.length > 50 || lastName.length > 50) {
+                showAuthFeedback('First and last names cannot exceed 50 characters each.', false);
+                return;
+            }
+
+            if (!PHONE_REGEX.test(contactNo)) {
+                showAuthFeedback('Please provide a valid contact number (7 to 25 digits, e.g. 09171234567).', false);
+                return;
+            }
+
+            if (address.length > 200) {
+                showAuthFeedback('Address cannot exceed 200 characters.', false);
+                return;
+            }
+
+            if (!EMAIL_REGEX.test(email) || email.length > 100) {
+                showAuthFeedback('Please provide a valid email address (up to 100 characters).', false);
+                return;
+            }
+
+            if (password.length < 8) {
+                showAuthFeedback('Password must be at least 8 characters.', false);
+                return;
+            }
+
+            if (password.length > 128) {
+                showAuthFeedback('Password cannot exceed 128 characters.', false);
+                return;
+            }
 
             btnSubmitAuth.disabled = true;
             btnSubmitLabel.textContent = 'Creating account...';

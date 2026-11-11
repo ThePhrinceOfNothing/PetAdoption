@@ -86,7 +86,7 @@
 
                     <div class="field span-2">
                         <label for="applicantNotes">Additional Household Details (Optional)</label>
-                        <input type="text" id="applicantNotes" placeholder="e.g. Fenced garden, experienced dog caregiver, work from home">
+                        <input type="text" id="applicantNotes" placeholder="e.g. Fenced garden, experienced dog caregiver, work from home" maxlength="400">
                     </div>
 
                     <div class="field span-2">
@@ -532,6 +532,10 @@
             }
             if (!environment) {
                 showToast('Please select your home & living environment.', 'warning');
+                return;
+            }
+            if (notes.length > 400) {
+                showToast('Household notes cannot exceed 400 characters.', 'warning');
                 return;
             }
             if (!currentUserEmail) {
