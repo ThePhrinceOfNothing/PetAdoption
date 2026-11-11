@@ -106,56 +106,96 @@
             </div>
         </div>
 
-        <div id="profileCard" style="display: none; flex-direction: column; gap: 24px;">
-            <!-- Top Hero Card with Basic Info and QR Kennel Tag -->
+                <div id="profileCard" class="profile-dossier-wrapper" style="display: none;">
+            <!-- Top Hero Card with Basic Info, Attributes and Kennel Ribbon -->
             <div class="profile-card">
-                <div class="passport-layout-grid">
-                    <!-- Photo Column -->
-                    <div class="profile-photo-container">
-                        <img id="profilePetImage" alt="Pet Photo" class="profile-pet-image">
-                        <div class="profile-photo-tag" id="passportCode"></div>
-                    </div>
-
-                    <!-- Details Column -->
-                    <div class="profile-details-list">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                            <h2 id="passportTitle" style="margin: 0;"></h2>
-                            <span class="status-pill success" id="passportStatus">Available</span>
+                <div class="passport-hero-layout">
+                    <!-- Photo & Action Column (Left) -->
+                    <div class="profile-media-col">
+                        <div class="profile-photo-container">
+                            <img id="profilePetImage" alt="Pet Photo" class="profile-pet-image">
+                            <div class="profile-photo-tag" id="passportCode">HP-PET</div>
                         </div>
-                        <dl>
-                            <dt>Species</dt>
-                            <dd id="passportSpecies">-</dd>
 
-                            <dt>Breed</dt>
-                            <dd id="passportBreed">-</dd>
-
-                            <dt>Estimated Age</dt>
-                            <dd id="passportAge">-</dd>
-
-                            <dt>Gender</dt>
-                            <dd id="passportGender">-</dd>
-
-                            <dt>Date Rescued</dt>
-                            <dd id="passportRegistered">-</dd>
-
-                            <dt>Personality</dt>
-                            <dd id="passportTemperament">-</dd>
-
-                            <dt>Behavior Notes</dt>
-                            <dd id="passportBehavior">-</dd>
-                        </dl>
-
-                        <div style="margin-top: 24px;" id="applyContainer">
-                            <a href="adopters.html" class="btn btn-primary" id="btnApplyPassport">Apply to Adopt</a>
+                        <div class="profile-primary-action" id="applyContainer">
+                            <a href="adopters.html" class="btn btn-primary btn-block" id="btnApplyPassport">Apply to Adopt</a>
                         </div>
                     </div>
 
-                    <!-- Scannable Kennel QR Panel -->
-                    <div class="qr-passport-panel">
-                        <img id="passportQrImg" src="" alt="Kennel QR Code" class="qr-code-img">
-                        <h4 id="qrLabelCode">HP-PET</h4>
-                        <p>Scan QR code to view this pet profile.</p>
-                        <span class="status-pill success" style="font-size: 0.72rem;">Active</span>
+                    <!-- Story, Attributes & Dossier Column (Right) -->
+                    <div class="profile-info-col">
+                        <div class="profile-info-header">
+                            <div class="profile-title-row">
+                                <h2 id="passportTitle" class="profile-pet-name"></h2>
+                                <div class="profile-header-badges">
+                                    <span class="status-pill success" id="passportStatus">Available</span>
+                                </div>
+                            </div>
+                            <p class="profile-subtitle" id="passportSubhead">Companion Profile & Official Shelter Passport</p>
+                        </div>
+
+                        <!-- Quick Attribute Spec Cards -->
+                        <div class="profile-specs-grid">
+                            <div class="spec-tile">
+                                <span class="spec-label">Species</span>
+                                <span class="spec-val" id="passportSpecies">-</span>
+                            </div>
+                            <div class="spec-tile">
+                                <span class="spec-label">Breed</span>
+                                <span class="spec-val" id="passportBreed">-</span>
+                            </div>
+                            <div class="spec-tile">
+                                <span class="spec-label">Estimated Age</span>
+                                <span class="spec-val" id="passportAge">-</span>
+                            </div>
+                            <div class="spec-tile">
+                                <span class="spec-label">Gender</span>
+                                <span class="spec-val" id="passportGender">-</span>
+                            </div>
+                            <div class="spec-tile">
+                                <span class="spec-label">Date Rescued</span>
+                                <span class="spec-val" id="passportRegistered">-</span>
+                            </div>
+                        </div>
+
+                        <!-- Personality Highlight Card -->
+                        <div class="personality-callout-card">
+                            <div class="personality-callout-head">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                                <span>Personality & Temperament</span>
+                            </div>
+                            <div class="personality-callout-body" id="passportTemperament">-</div>
+                        </div>
+
+                        <!-- Behavior Notes Section -->
+                        <div class="behavior-notes-card">
+                            <div class="behavior-notes-head">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                </svg>
+                                <span>Behavior & Shelter Notes</span>
+                            </div>
+                            <p class="behavior-notes-body" id="passportBehavior">-</p>
+                        </div>
+
+                        <!-- Scannable Kennel QR Ribbon (Horizontal) -->
+                        <div class="kennel-passport-ribbon">
+                            <div class="qr-thumbnail-box">
+                                <img id="passportQrImg" src="" alt="Kennel QR Code" class="qr-code-img">
+                            </div>
+                            <div class="qr-ribbon-content">
+                                <div class="qr-ribbon-tag-row">
+                                    <span class="qr-ribbon-id" id="qrLabelCode">HP-PET</span>
+                                    <span class="status-pill success" style="font-size: 0.72rem; padding: 2px 8px;">Active</span>
+                                </div>
+                                <p class="qr-ribbon-text">Official Shelter Kennel Passport. Scan with mobile camera to view, share, or track this companion's live adoption record.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -199,14 +239,11 @@
 
     <script>
         // Separation of Duties Verification
-        const currentRole = (localStorage.getItem('currentUserRole') || '').toLowerCase();
-        const currentUserName = localStorage.getItem('currentUserName') || 'Friend';
+        const currentRole = (localStorage.getItem('currentUserRole') || 'adopter').toLowerCase();
+        const currentUserName = localStorage.getItem('currentUserName') || 'Visitor';
 
         if (currentRole === 'admin') {
             window.location.href = 'users.html';
-        }
-        if (!currentRole) {
-            window.location.href = 'login.html';
         }
 
         document.getElementById('userNameDisplay').textContent = currentUserName;
@@ -339,7 +376,9 @@
 
                     document.getElementById('profilePetImage').src = imgUrl;
                     document.getElementById('passportCode').textContent = `HP-PET-${id}`;
-                    document.getElementById('passportTitle').textContent = `${name}'s Profile`;
+                    document.getElementById('passportTitle').textContent = `${name}`;
+                    const subhead = document.getElementById('passportSubhead');
+                    if (subhead) subhead.textContent = `${breed} • ${gender} • Rescued on ${dateRegistered}`;
                     document.getElementById('passportSpecies').textContent = species;
                     document.getElementById('passportBreed').textContent = breed;
                     document.getElementById('passportAge').textContent = age;
