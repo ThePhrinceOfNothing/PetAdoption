@@ -285,33 +285,24 @@
             roleBadge.style.color = 'var(--text-muted)';
             roleBadge.textContent = 'GUEST';
 
-            document.getElementById('navSectionTitle').textContent = 'Welcome Visitor';
+            document.getElementById('navSectionTitle').textContent = 'Public Passport';
             dynamicNav.innerHTML = `
-                <div style="padding: 12px; font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; background: var(--bg-canvas); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); margin-bottom: 12px;">
-                    You are viewing a public companion profile. Sign in or register to browse all shelter companions.
+                <div style="padding: 14px 16px; font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; background: var(--bg-canvas); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <strong style="color: var(--text-main); display: block; margin-bottom: 4px; font-size: 0.88rem;">Official Kennel Record</strong>
+                    You are viewing the live shelter profile for this rescue companion.
                 </div>
-                <a href="login.html" class="active" style="font-weight: 700;">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                        <polyline points="10 17 15 12 10 7"></polyline>
-                        <line x1="15" y1="12" x2="3" y2="12"></line>
-                    </svg>
-                    Sign In / Register
-                </a>
             `;
 
             if (printTagBtn) printTagBtn.style.display = 'none';
             const editProfileBtn = document.getElementById('btnEditCompanionProfile');
             if (editProfileBtn) editProfileBtn.style.display = 'none';
 
-            // Top Header: Replace "Return to Our Pets" with "Sign In to Browse"
+            // Top Header: Hide return button for unauthenticated guests to avoid clutter
             if (returnPetsBtn) {
-                returnPetsBtn.textContent = 'Sign In to Browse';
-                returnPetsBtn.href = 'login.html';
-                returnPetsBtn.className = 'btn btn-sm btn-primary';
+                returnPetsBtn.style.display = 'none';
             }
 
-            // Sidebar: Replace "Sign Out" with "Sign In"
+            // Sidebar Footer: Clean, standard Sign In link
             if (signoutBtn) {
                 signoutBtn.innerHTML = `
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
