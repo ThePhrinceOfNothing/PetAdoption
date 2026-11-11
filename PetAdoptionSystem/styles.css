@@ -2172,255 +2172,16 @@ main {
 }
 
 /* ==================== PET PROFILE ==================== */
-.profile-dossier-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    max-width: 1080px;
-    width: 100%;
-    margin-bottom: 48px;
-}
-
 .profile-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-subtle);
     padding: 32px;
+    max-width: 1020px;
     width: 100%;
     box-sizing: border-box;
     animation: modalEnter 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.passport-hero-layout {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 36px;
-    align-items: start;
-}
-
-@media (max-width: 920px) {
-    .passport-hero-layout {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-}
-
-.profile-media-col {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 280px;
-    flex-shrink: 0;
-}
-
-@media (max-width: 920px) {
-    .profile-media-col {
-        width: 100%;
-        max-width: 320px;
-        margin: 0 auto;
-    }
-}
-
-.profile-primary-action {
-    width: 100%;
-}
-
-.profile-primary-action .btn {
-    width: 100%;
-    justify-content: center;
-    padding: 12px 18px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-}
-
-.profile-info-col {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    min-width: 0;
-    flex: 1;
-}
-
-.profile-info-header {
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--border-subtle);
-}
-
-.profile-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    flex-wrap: wrap;
-}
-
-.profile-pet-name {
-    font-size: 1.85rem;
-    font-weight: 800;
-    color: var(--text-main);
-    margin: 0;
-    letter-spacing: -0.02em;
-}
-
-.profile-subtitle {
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    margin: 4px 0 0 0;
-    font-weight: 500;
-}
-
-.profile-specs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: 10px;
-}
-
-.spec-tile {
-    background: var(--bg-canvas);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    transition: border-color 150ms ease, transform 150ms ease;
-}
-
-.spec-tile:hover {
-    border-color: var(--primary-border);
-    transform: translateY(-1px);
-}
-
-.spec-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--text-muted);
-}
-
-.spec-val {
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: var(--text-main);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.personality-callout-card {
-    background: #FDF8F0;
-    border: 1px solid #EFE2CF;
-    border-left: 4px solid var(--accent);
-    border-radius: var(--radius-sm);
-    padding: 14px 18px;
-}
-
-.personality-callout-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.74rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--accent);
-    margin-bottom: 6px;
-}
-
-.personality-callout-body {
-    font-size: 0.96rem;
-    font-weight: 600;
-    color: var(--text-main);
-    line-height: 1.45;
-}
-
-.behavior-notes-card {
-    background: var(--bg-canvas);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 14px 18px;
-}
-
-.behavior-notes-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.74rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-}
-
-.behavior-notes-body {
-    font-size: 0.92rem;
-    color: var(--text-main);
-    line-height: 1.5;
-    margin: 0;
-}
-
-.kennel-passport-ribbon {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: var(--bg-surface);
-    border: 1px dashed var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: 12px 16px;
-    margin-top: 4px;
-}
-
-.qr-thumbnail-box {
-    flex-shrink: 0;
-    width: 68px;
-    height: 68px;
-    background: #FFFFFF;
-    padding: 4px;
-    border: 1px solid var(--border-subtle);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 6px rgba(35, 25, 20, 0.04);
-}
-
-.qr-thumbnail-box .qr-code-img {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    border: none;
-    object-fit: contain;
-}
-
-.qr-ribbon-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.qr-ribbon-tag-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-}
-
-.qr-ribbon-id {
-    font-family: var(--font-mono);
-    font-size: 0.84rem;
-    font-weight: 700;
-    color: var(--text-main);
-}
-
-.qr-ribbon-text {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    margin: 0;
-    line-height: 1.35;
 }
 
 .profile-photo-container {
@@ -2737,10 +2498,11 @@ main {
 
 .profile-details-list dl {
     display: grid;
-    grid-template-columns: 140px 1fr;
-    row-gap: 8px;
+    grid-template-columns: 125px 1fr;
+    row-gap: 12px;
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
 }
 
 .profile-details-list dt {
@@ -3163,8 +2925,8 @@ main {
 /* ==================== CLINICAL HEALTH PASSPORT & KENNEL QR ==================== */
 .passport-layout-grid {
     display: grid;
-    grid-template-columns: 260px 1fr 220px;
-    gap: 24px;
+    grid-template-columns: 240px 1fr 200px;
+    gap: 32px;
     align-items: start;
 }
 
@@ -3179,7 +2941,8 @@ main {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     padding: 24px 32px;
-    margin-top: 0;
+    margin-top: 24px;
+    max-width: 1020px;
     width: 100%;
     box-sizing: border-box;
     box-shadow: var(--shadow-subtle);
@@ -3206,8 +2969,14 @@ main {
 
 .health-grid-metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+
+@media (max-width: 960px) {
+    .health-grid-metrics {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
 }
 
 .health-metric-box {
@@ -3243,7 +3012,7 @@ main {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    padding: 20px;
+    padding: 16px;
     text-align: center;
     box-shadow: var(--shadow-subtle);
     transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms ease-out;
@@ -3255,12 +3024,12 @@ main {
 }
 
 .qr-code-img {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 12px;
+    width: 136px;
+    height: 136px;
+    margin: 0 auto 10px;
     display: block;
     background: #fff;
-    padding: 8px;
+    padding: 6px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-subtle);
     transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
