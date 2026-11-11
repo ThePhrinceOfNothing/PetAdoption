@@ -3932,7 +3932,7 @@ main {
         background: #fff !important;
         color: #000 !important;
     }
-    aside, .page-header div:last-child, #applyContainer, .btn-print-tag, .btn-signout, #dynamicNav, .welcome-nook-art {
+    aside, .mobile-top-bar, #mobileTopBar, .mobile-nav-backdrop, #mobileNavBackdrop, .page-header div:last-child, #applyContainer, .btn-print-tag, .btn-signout, #dynamicNav, .welcome-nook-art {
         display: none !important;
     }
     main {
@@ -3940,14 +3940,100 @@ main {
         padding: 0 !important;
         max-width: 100% !important;
     }
-    .profile-card {
-        border: 2px solid #000 !important;
-        box-shadow: none !important;
-        page-break-inside: avoid;
-        padding: 24px !important;
+    /* Minimalist QR Only Pet Tag Print Mode */
+    body.pet-profile-page .mobile-top-bar,
+    body.pet-profile-page #mobileTopBar,
+    body.pet-profile-page .mobile-nav-backdrop,
+    body.pet-profile-page #mobileNavBackdrop,
+    body.pet-profile-page aside,
+    body.pet-profile-page .top-bar,
+    body.pet-profile-page .page-header,
+    body.pet-profile-page #loadingState,
+    body.pet-profile-page .profile-photo-container,
+    body.pet-profile-page .profile-details-list,
+    body.pet-profile-page .clinical-health-card,
+    body.pet-profile-page #applyContainer,
+    body.pet-profile-page .qr-passport-panel p,
+    body.pet-profile-page .qr-passport-panel .status-pill,
+    body.pet-profile-page .btn-primary,
+    body.pet-profile-page .btn {
+        display: none !important;
     }
-    .passport-layout-grid {
-        grid-template-columns: 220px 1fr 180px !important;
+
+    body.pet-profile-page main {
+        margin: 0 !important;
+        padding: 40px 0 !important;
+        max-width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    body.pet-profile-page #profileCard {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        page-break-inside: avoid !important;
+    }
+
+    body.pet-profile-page .profile-card {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+        page-break-inside: avoid !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    body.pet-profile-page .passport-layout-grid {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        grid-template-columns: none !important;
+        width: auto !important;
+        margin: 0 auto !important;
+        gap: 0 !important;
+    }
+
+    body.pet-profile-page .qr-passport-panel {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+        text-align: center !important;
+        page-break-inside: avoid !important;
+    }
+
+    body.pet-profile-page #passportQrImg {
+        display: block !important;
+        width: 220px !important;
+        height: 220px !important;
+        margin: 0 auto !important;
+        image-rendering: -webkit-optimize-contrast !important;
+        image-rendering: crisp-edges !important;
+        image-rendering: pixelated !important;
+    }
+
+    body.pet-profile-page #qrLabelCode {
+        display: block !important;
+        font-family: 'DM Mono', monospace, -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 1.5rem !important;
+        font-weight: 800 !important;
+        color: #000 !important;
+        margin: 16px 0 0 0 !important;
+        letter-spacing: 0.1em !important;
+        text-align: center !important;
     }
 
     /* Print Keepsake Certificate */
