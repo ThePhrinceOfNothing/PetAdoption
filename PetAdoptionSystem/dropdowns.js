@@ -243,20 +243,156 @@
         });
     }
 
+    // Responsive Mobile Navigation Drawer & Sticky Mobile Header
+    function initMobileNavigation() {
+        const aside = document.querySelector('aside');
+        if (!aside || document.getElementById('mobileTopBar')) return;
+
+        // 1. Create Mobile Top Bar
+        const topBar = document.createElement('header');
+        topBar.className = 'mobile-top-bar';
+        topBar.id = 'mobileTopBar';
+        topBar.innerHTML = `
+            <div class="mobile-top-brand">
+                <div class="mobile-brand-mark">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <ellipse cx="4.8" cy="8.5" rx="1.8" ry="2.6" transform="rotate(-20 4.8 8.5)" />
+                        <ellipse cx="9.5" cy="5.2" rx="2" ry="2.9" transform="rotate(-6 9.5 5.2)" />
+                        <ellipse cx="14.5" cy="5.2" rx="2" ry="2.9" transform="rotate(6 14.5 5.2)" />
+                        <ellipse cx="19.2" cy="8.5" rx="1.8" ry="2.6" transform="rotate(20 19.2 8.5)" />
+                        <path d="M12 9.8c-3.6 0-6.8 2.4-6.8 6.2 0 3.2 2.7 5.5 6.8 5.5s6.8-2.3 6.8-5.5c0-3.8-3.2-6.2-6.8-6.2z" />
+                    </svg>
+                </div>
+                <span class="mobile-brand-title">Happy Paws</span>
+            </div>
+            <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+        `;
+
+        document.body.insertBefore(topBar, document.body.firstChild);
+
+        // 2. Create Backdrop
+        const backdrop = document.createElement('div');
+        backdrop.className = 'mobile-nav-backdrop';
+        backdrop.id = 'mobileNavBackdrop';
+        document.body.appendChild(backdrop);
+
+        // 3. Add Close Button to Aside Header
+        let closeBtn = aside.querySelector('.mobile-aside-close');
+        if (!closeBtn) {
+            closeBtn = document.createElement('button');
+            closeBtn.type = 'button';
+            closeBtn.className = 'mobile-aside-close';
+            closeBtn.id = 'mobileAsideClose';
+            closeBtn.setAttribute('aria-label', 'Close navigation menu');
+            closeBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            `;
+            const brandBlock = aside.querySelector('.brand-block');
+            if (brandBlock) {
+                brandBlock.appendChild(closeBtn);
+            } else {
+                aside.insertBefore(closeBtn, aside.firstChild);
+            }
+        }
+
+        function openMenu() {
+            aside.classList.add('mobile-drawer-open');
+            backdrop.classList.add('is-active');
+            document.body.classList.add('mobile-nav-active');
+            const btn = document.getElementById('mobileMenuBtn');
+            if (btn) btn.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeMenu() {
+            aside.classList.remove('mobile-drawer-open');
+            backdrop.classList.remove('is-active');
+            document.body.classList.remove('mobile-nav-active');
+            const btn = document.getElementById('mobileMenuBtn');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        if (menuBtn) {
+            menuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (aside.classList.contains('mobile-drawer-open')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeMenu();
+            });
+        }
+
+        backdrop.addEventListener('click', closeMenu);
+
+        // Close on link navigation or Escape key
+        aside.querySelectorAll('nav a, .btn-signout').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 900) {
+                    closeMenu();
+                }
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && aside.classList.contains('mobile-drawer-open')) {
+                closeMenu();
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 900 && aside.classList.contains('mobile-drawer-open')) {
+                closeMenu();
+            }
+        });
+    }
+
+    // Auto-wrap data tables in smooth horizontal scrolling wrappers
+    function makeTablesResponsive() {
+        document.querySelectorAll('table.data-table').forEach(table => {
+            if (!table.parentElement.classList.contains('data-table-responsive')) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'data-table-responsive';
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            }
+        });
+    }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
+            initMobileNavigation();
+            makeTablesResponsive();
             enhanceAllSelects();
             attachTactileFeedback();
             initPeekingCompanion();
         });
     } else {
+        initMobileNavigation();
+        makeTablesResponsive();
         enhanceAllSelects();
         attachTactileFeedback();
         initPeekingCompanion();
     }
 
-    // Continuously observe DOM for newly added select elements & sidebar companion
+    // Continuously observe DOM for newly added select elements, tables & sidebar companion
     const pageObserver = new MutationObserver(() => {
+        initMobileNavigation();
+        makeTablesResponsive();
         enhanceAllSelects();
         initPeekingCompanion();
     });
