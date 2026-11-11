@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: happy-paws
+    runtime: docker
+    plan: free
+    region: singapore
+    branch: main
+    healthCheckPath: /api/test-db
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 10000

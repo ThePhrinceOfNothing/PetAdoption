@@ -1,0 +1,9 @@
+.git
+.github
+.gemini
+*.png
+*.jpg
+*.log
+backend/target
+target
+*.md
