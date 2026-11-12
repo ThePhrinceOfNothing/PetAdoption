@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -326,6 +327,7 @@ public class PetController {
     // Shelter Operations Duty: Only Staff can add rescued pets
     // Administrators manage users only; Adopters only browse and apply
     @PostMapping("/pets")
+    @Transactional
     public ResponseEntity<Map<String, Object>> addPet(
             @RequestBody Map<String, Object> payload,
             @RequestHeader(value = "X-User-Role", defaultValue = "adopter") String requesterRole) {
