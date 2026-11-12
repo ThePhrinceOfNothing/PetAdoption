@@ -239,13 +239,19 @@
                     actionHtml = `
                         <button type="button" class="btn-promote" onclick="changeUserRole(${u.userid}, 'staff', '${escapeQuotes(u.fullname)}')">
                             <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            Promote to Shelter Staff
+                            Promote to Staff
+                        </button>
+                        <button type="button" class="btn-demote" style="color:var(--danger, #C43232);border-color:rgba(196,50,50,0.3);margin-left:6px;" onclick="deleteUserAccount(${u.userid}, '${escapeQuotes(u.fullname)}')">
+                            Delete
                         </button>
                     `;
                 } else if (roleLower === 'staff') {
                     actionHtml = `
                         <button type="button" class="btn-demote" onclick="changeUserRole(${u.userid}, 'adopter', '${escapeQuotes(u.fullname)}')">
                             Reassign to Adopter
+                        </button>
+                        <button type="button" class="btn-demote" style="color:var(--danger, #C43232);border-color:rgba(196,50,50,0.3);margin-left:6px;" onclick="deleteUserAccount(${u.userid}, '${escapeQuotes(u.fullname)}')">
+                            Delete
                         </button>
                     `;
                 } else {
@@ -355,6 +361,35 @@
                 }
             } catch (err) {
                 showToast('Connection error while updating account role.', 'error');
+            }
+        }
+
+        async function deleteUserAccount(userId, userName) {
+            const confirmed = await showConfirmDialog({
+                title: 'Delete User Account',
+                message: `Are you sure you want to permanently delete <strong>${escapeHtml(userName)}</strong> (#${userId})? This will also remove any associated adopter profile.`,
+                confirmText: 'Delete Account',
+                type: 'danger'
+            });
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch(`/api/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-User-Role': localStorage.getItem('currentUserRole') || 'admin'
+                    }
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    showToast(`${userName}'s account was deleted successfully.`, 'success');
+                    fetchUsers();
+                } else {
+                    showToast(data.message || 'Failed to delete user account.', 'error');
+                }
+            } catch (err) {
+                showToast('Connection error while deleting user account.', 'error');
             }
         }
 

@@ -185,6 +185,19 @@ public class AuthController {
                     System.out.println("Notice on Option B migration: " + ex.getMessage());
                 }
 
+                // Clean up automated test registration accounts
+                try {
+                    jdbcTemplate.execute("""
+                        DELETE FROM Adopters WHERE UserID IN (
+                            SELECT UserID FROM Users WHERE Email LIKE '%@example.com' OR Email LIKE 'unique.%' OR Email LIKE 'test.%' OR Email LIKE 'maria.withconsent.%'
+                        );
+                        DELETE FROM Users WHERE Email LIKE '%@example.com' OR Email LIKE 'unique.%' OR Email LIKE 'test.%' OR Email LIKE 'maria.withconsent.%';
+                    """);
+                    System.out.println(">>> Automated test registration accounts cleaned up from database.");
+                } catch (Exception ex) {
+                    System.out.println("Notice on test user cleanup: " + ex.getMessage());
+                }
+
                 // 5. Load all DB accounts into in-memory cache
                 loadAllUsersIntoCache();
                 System.out.println(">>> Users database initialized and cache synchronized with secure credentials!");
@@ -597,6 +610,61 @@ public class AuthController {
             "success", true,
             "message", "Account role updated to " + roleName + "."
         ));
+    }
+
+    // Admin Only: Delete user account
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> deleteUser(
+        @PathVariable("id") int id,
+        @RequestHeader(value = "X-User-Role", defaultValue = "") String requesterRole
+    ) {
+        if (!"admin".equalsIgnoreCase(requesterRole)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "success", false,
+                "message", "Access denied. Only Administrators can delete accounts."
+            ));
+        }
+
+        try {
+            String targetRole = jdbcTemplate.queryForObject("SELECT Role FROM Users WHERE UserID = ?;", String.class, id);
+            if ("admin".equalsIgnoreCase(targetRole)) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Cannot delete an Administrator account."
+                ));
+            }
+
+            // Remove any associated Adoption_Applications or Adopter profiles safely
+            try {
+                jdbcTemplate.update("""
+                    DELETE FROM Adoption_Applications WHERE AdopterID IN (
+                        SELECT AdopterID FROM Adopters WHERE UserID = ?
+                    );
+                """, id);
+                jdbcTemplate.update("DELETE FROM Adopters WHERE UserID = ?;", id);
+            } catch (Exception ignored) {}
+
+            int deleted = jdbcTemplate.update("DELETE FROM Users WHERE UserID = ?;", id);
+            if (deleted == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "success", false,
+                    "message", "User account not found."
+                ));
+            }
+
+            // Clear from in-memory cache
+            userCache.values().removeIf(u -> u.userId == id);
+
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "User account deleted successfully."
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", "Failed to delete user: " + e.getMessage()
+            ));
+        }
     }
 
     // Compatibility Quiz submission (Adopters)
