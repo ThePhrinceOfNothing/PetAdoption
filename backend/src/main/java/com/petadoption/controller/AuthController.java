@@ -372,6 +372,16 @@ public class AuthController {
             ));
         }
 
+        // Explicit Privacy Consent Enforcement (RA 10173 - Data Privacy Act of 2012)
+        Object consentObj = payload.get("privacyConsent");
+        boolean privacyConsent = (consentObj instanceof Boolean) ? (Boolean) consentObj : "true".equalsIgnoreCase(String.valueOf(consentObj));
+        if (!privacyConsent) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Explicit consent to the Data Privacy Terms under RA 10173 is required to create an account."
+            ));
+        }
+
         if (firstName.length() > 50) {
             return ResponseEntity.badRequest().body(Map.of(
                 "success", false,
