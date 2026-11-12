@@ -117,6 +117,16 @@ public class PetController {
                     """;
                     jdbcTemplate.execute(createArchivesSql);
 
+                    // Auto-expand column lengths in Pet_Profiles & Pet_Health_Records to prevent truncation errors
+                    try {
+                        jdbcTemplate.execute("ALTER TABLE Pet_Profiles ALTER COLUMN Behavior TYPE TEXT;");
+                        jdbcTemplate.execute("ALTER TABLE Pet_Profiles ALTER COLUMN Personality TYPE TEXT;");
+                        jdbcTemplate.execute("ALTER TABLE Pet_Health_Records ALTER COLUMN MedicalCondition TYPE TEXT;");
+                        jdbcTemplate.execute("ALTER TABLE Pet_Health_Records ALTER COLUMN Medication TYPE TEXT;");
+                    } catch (Exception alterEx) {
+                        System.out.println("Notice on table columns expansion: " + alterEx.getMessage());
+                    }
+
                     System.out.println(">>> Pet_Images and pet_archives tables verified and ready in PostgreSQL!");
                     ready = true;
                 } catch (Exception e) {
